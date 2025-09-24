@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LibraryHeaderView: View {
     @Binding var addsNewSection: Bool
+    @Binding var sortOrder: SortOrder
     
     var body: some View {
         HStack(spacing: 0) {
@@ -10,10 +11,20 @@ struct LibraryHeaderView: View {
             
             Spacer()
             
+            Picker("Sort by", selection: $sortOrder) {
+                ForEach(SortOrder.allCases) { sortOrderItem in
+                    Text("Sort by \(sortOrderItem.description)")
+                        .tag(sortOrderItem)
+                }
+            }
+            .buttonStyle(.bordered)
+            .frame(maxWidth: 200)
+            
             Button {
                 addsNewSection.toggle()
             } label: {
                 Image(systemName: "plus")
+                    .font(.title3)
                     .foregroundStyle(.white)
                     .padding(8)
                     .background {
@@ -26,5 +37,8 @@ struct LibraryHeaderView: View {
 }
 
 #Preview {
-    LibraryHeaderView(addsNewSection: .constant(false))
+    LibraryHeaderView(
+        addsNewSection: .constant(false),
+        sortOrder: .constant(SortOrder.title)
+    )
 }
