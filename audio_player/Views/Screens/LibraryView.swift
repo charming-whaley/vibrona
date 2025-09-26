@@ -59,7 +59,7 @@ struct LibraryView: View {
             .sheet(isPresented: $addsNewSection) {
                 NewLibrarySectionView()
                     .interactiveDismissDisabled()
-                    .presentationDetents([.medium])
+                    .presentationDetents([.height(200)])
             }
         }
     }

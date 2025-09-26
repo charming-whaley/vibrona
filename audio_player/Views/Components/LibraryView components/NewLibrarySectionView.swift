@@ -5,12 +5,22 @@ struct NewLibrarySectionView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    @State private var title: String = "helllllllllllo"
+    @State private var title: String = "Empty Section"
+    @State private var systemImage: String = "music.pages.fill"
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 8) {
+                Text("Title")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 
+                TextField("Section title...", text: $title)
+                    .overlay(alignment: .bottom) {
+                        Divider()
+                            .offset(y: 10)
+                    }
             }
             .navigationTitle("Add new section")
             .navigationBarTitleDisplayMode(.inline)
@@ -32,6 +42,7 @@ struct NewLibrarySectionView: View {
                     }
                 }
             }
+            .padding(.horizontal)
         }
     }
 }
