@@ -56,7 +56,7 @@ struct LibraryView: View {
             .scrollIndicators(.hidden)
             .sheet(isPresented: $addsNewSection) {
                 NewLibrarySectionView()
-                    .presentationDetents([.height(200)])
+                    .presentationDetents([.height(300)])
             }
         }
     }

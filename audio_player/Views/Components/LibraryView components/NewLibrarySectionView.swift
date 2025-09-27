@@ -7,10 +7,13 @@ struct NewLibrarySectionView: View {
     
     @State private var title: String = "Empty Category"
     @State private var systemImage: String = "music.pages.fill"
+    @State private var libraryItemType: LibraryItemType = .songs
+    
+    private let covers: [String] = ["heart.fill", "music.note", "music.note.square.stack.fill", "rectangle.stack.fill"]
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 8) {
+            VStack(spacing: 12) {
                 Text("Title")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -21,6 +24,36 @@ struct NewLibrarySectionView: View {
                         Divider()
                             .offset(y: 10)
                     }
+                    .padding(.bottom, 20)
+                
+                Text("Cover & type")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                HStack {
+                    HStack {
+                        ForEach(covers, id: \.self) { cover in
+                            Image(systemName: cover)
+                                .font(.title)
+                                .frame(maxWidth: .infinity)
+                                .foregroundStyle(systemImage == cover ? .blue : .black)
+                                .contentShape(.rect)
+                                .onTapGesture {
+                                    systemImage = cover
+                                }
+                        }
+                    }
+                    
+                    Spacer(minLength: 30)
+                    
+                    Picker("", selection: $libraryItemType) {
+                        ForEach(LibraryItemType.allCases) { type in
+                            Text("\(type.description)")
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                }
             }
             .navigationTitle("Create Category")
             .navigationBarTitleDisplayMode(.inline)
@@ -35,8 +68,8 @@ struct NewLibrarySectionView: View {
                     Button("Create") {
                         modelContext.insert(LibraryItem(
                             title: title,
-                            systemImage: "music.pages.fill",
-                            libraryItemType: .songs,
+                            systemImage: systemImage,
+                            libraryItemType: libraryItemType,
                             isSystemItem: false
                         ))
                         

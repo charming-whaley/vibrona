@@ -5,7 +5,7 @@ import SwiftData
 final class LibraryItem {
     var title: String
     var systemImage: String
-    var dateAdded: Date = Date.now
+    var dateAdded: Date = Date.distantPast
     var isSystemItem: Bool
     var libraryItemType: LibraryItemType
     
