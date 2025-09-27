@@ -37,7 +37,7 @@ struct NewLibrarySectionView: View {
                             Image(systemName: cover)
                                 .font(.title)
                                 .frame(maxWidth: .infinity)
-                                .foregroundStyle(systemImage == cover ? .blue : .black)
+                                .foregroundStyle(systemImage == cover ? .blue : .white)
                                 .contentShape(.rect)
                                 .onTapGesture {
                                     systemImage = cover

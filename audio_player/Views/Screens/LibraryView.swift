@@ -7,6 +7,9 @@ struct LibraryView: View {
     @State private var addsNewSection: Bool = false
     @State private var sortOrder: SortOrder = .title
     
+    @State private var deleteSection: Bool = false
+    @State private var currentLibraryItem: LibraryItem?
+    
     init() {
         let sortDescriptors: [SortDescriptor<LibraryItem>] = switch sortOrder {
         case .title:
@@ -38,7 +41,8 @@ struct LibraryView: View {
                             }
     
                             Button(role: .destructive) {
-                                modelContext.delete(libraryItem)
+                                currentLibraryItem = libraryItem
+                                deleteSection = true
                             } label: {
                                 Label("Delete", systemImage: "trash.fill")
                             }
@@ -54,6 +58,17 @@ struct LibraryView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .scrollIndicators(.hidden)
+            .alert("Delete Category?", isPresented: $deleteSection, actions: {
+                Button("Delete", role: .destructive) {
+                    if let libraryItem = currentLibraryItem {
+                        modelContext.delete(libraryItem)
+                    }
+                    currentLibraryItem = nil
+                    deleteSection = false
+                }
+            }, message: {
+                Text("Do you actually want to delete this category? This action does not affect included content")
+            })
             .sheet(isPresented: $addsNewSection) {
                 NewLibrarySectionView()
                     .presentationDetents([.height(300)])
@@ -67,5 +82,6 @@ struct LibraryView: View {
     preview.insert(LibraryItem.sampleLibraryItems)
     
     return LibraryView()
+        .preferredColorScheme(.dark)
         .modelContainer(preview.container)
 }

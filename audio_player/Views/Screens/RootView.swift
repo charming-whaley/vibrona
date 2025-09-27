@@ -12,6 +12,10 @@ struct RootView: View {
             Tab("Settings", systemImage: "gearshape.fill") {
                 SettingsView()
             }
+            
+            Tab(role: .search) {
+                
+            }
         }
         .fullScreenCover(isPresented: $expandPlayerView) {
             PlayerView()
