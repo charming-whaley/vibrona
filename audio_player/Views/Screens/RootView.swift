@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct RootView: View {
+    @State private var expandPlayerView: Bool = false
+    
     var body: some View {
         TabView {
             Tab("Library", systemImage: "square.grid.2x2.fill") {
@@ -11,8 +13,14 @@ struct RootView: View {
                 SettingsView()
             }
         }
+        .fullScreenCover(isPresented: $expandPlayerView) {
+            PlayerView()
+        }
         .tabViewBottomAccessory {
             MiniPlayerView()
+                .onTapGesture {
+                    expandPlayerView = true
+                }
         }
     }
 }

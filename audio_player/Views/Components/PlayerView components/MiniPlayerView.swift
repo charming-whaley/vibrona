@@ -41,6 +41,7 @@ struct MiniPlayerView: View {
         }
         .padding()
         .glassEffect(.clear)
+        .contentShape(.rect)
     }
 }
 

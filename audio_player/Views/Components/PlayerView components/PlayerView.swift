@@ -1,8 +1,19 @@
-//
-//  PlayerView.swift
-//  audio_player
-//
-//  Created by Fedya Katkov on 9/27/25.
-//
+import SwiftUI
 
-import Foundation
+struct PlayerView: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        VStack {
+            Button {
+                dismiss()
+            } label: {
+                Text("Close")
+            }
+        }
+    }
+}
+
+#Preview {
+    PlayerView()
+}
