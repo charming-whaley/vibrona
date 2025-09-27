@@ -11,6 +11,9 @@ struct RootView: View {
                 SettingsView()
             }
         }
+        .tabViewBottomAccessory {
+            MiniPlayerView()
+        }
     }
 }
 

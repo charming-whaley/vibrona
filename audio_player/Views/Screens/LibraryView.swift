@@ -22,10 +22,7 @@ struct LibraryView: View {
         NavigationStack {
             ScrollView(.vertical) {
                 LazyVStack(spacing: 0) {
-                    LibraryHeaderView(
-                        addsNewSection: $addsNewSection,
-                        sortOrder: $sortOrder
-                    )
+                    LibraryHeaderView(addsNewSection: $addsNewSection, sortOrder: $sortOrder)
                     
                     ForEach(libraryItems) { libraryItem in
                         NavigationLink {
@@ -58,7 +55,6 @@ struct LibraryView: View {
             .scrollIndicators(.hidden)
             .sheet(isPresented: $addsNewSection) {
                 NewLibrarySectionView()
-                    .interactiveDismissDisabled()
                     .presentationDetents([.height(200)])
             }
         }

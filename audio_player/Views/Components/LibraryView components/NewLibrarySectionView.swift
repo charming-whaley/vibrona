@@ -5,7 +5,7 @@ struct NewLibrarySectionView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    @State private var title: String = "Empty Section"
+    @State private var title: String = "Empty Category"
     @State private var systemImage: String = "music.pages.fill"
     
     var body: some View {
@@ -22,7 +22,7 @@ struct NewLibrarySectionView: View {
                             .offset(y: 10)
                     }
             }
-            .navigationTitle("Add new section")
+            .navigationTitle("Create Category")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
