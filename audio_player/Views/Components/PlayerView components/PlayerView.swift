@@ -24,37 +24,9 @@ struct PlayerView: View {
                         .foregroundStyle(.foreground)
                 }
             }
+            .padding()
             
-            HStack(spacing: 25) {
-                Button {
-                    
-                } label: {
-                    Image(systemName: "backward.end.fill")
-                        .font(.title)
-                        .foregroundStyle(.foreground)
-                }
-                
-                Button {
-                    
-                } label: {
-                    Image(systemName: "play.fill")
-                        .font(.title)
-                        .foregroundStyle(.foreground)
-                        .padding(20)
-                        .background {
-                            Circle()
-                                .fill(.blue)
-                        }
-                }
-                
-                Button {
-                    
-                } label: {
-                    Image(systemName: "forward.end.fill")
-                        .font(.title)
-                        .foregroundStyle(.foreground)
-                }
-            }
+            Spacer()
         }
         .padding(.horizontal)
     }

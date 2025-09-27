@@ -15,7 +15,7 @@ struct LibraryItemView: View {
             
             Text(libraryItem.title)
                 .font(.headline)
-                .foregroundStyle(.black)
+                .foregroundStyle(.white)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()

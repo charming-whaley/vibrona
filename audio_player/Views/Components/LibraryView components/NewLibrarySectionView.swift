@@ -35,7 +35,9 @@ struct NewLibrarySectionView: View {
                     Button("Create") {
                         modelContext.insert(LibraryItem(
                             title: title,
-                            systemImage: "music.pages.fill"
+                            systemImage: "music.pages.fill",
+                            libraryItemType: .songs,
+                            isSystemItem: false
                         ))
                         
                         dismiss()

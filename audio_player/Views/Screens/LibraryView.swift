@@ -42,6 +42,7 @@ struct LibraryView: View {
                             } label: {
                                 Label("Delete", systemImage: "trash.fill")
                             }
+                            .disabled(libraryItem.isSystemItem)
                         }
                         
                         if let lastItemId = libraryItems.last, libraryItem.id != lastItemId.id {
