@@ -37,12 +37,6 @@ struct audio_playerApp: App {
                         systemImage: "music.note.square.stack.fill",
                         libraryItemType: .playlist,
                         isSystemItem: true
-                    ),
-                    .init(
-                        title: "Albums",
-                        systemImage: "rectangle.stack.fill",
-                        libraryItemType: .album,
-                        isSystemItem: true
                     )
                 ]
                 
