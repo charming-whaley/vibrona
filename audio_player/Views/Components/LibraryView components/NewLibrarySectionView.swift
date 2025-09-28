@@ -54,7 +54,10 @@ struct NewLibrarySectionView: View {
                     }
                     .buttonStyle(.bordered)
                 }
+                
+                Spacer()
             }
+            .padding(.top)
             .navigationTitle("Create Category")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

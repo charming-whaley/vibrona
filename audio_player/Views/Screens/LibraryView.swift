@@ -7,6 +7,8 @@ struct LibraryView: View {
     @State private var addsNewSection: Bool = false
     @State private var sortOrder: SortOrder = .title
     
+    @State private var renameSection: Bool = false
+    @State private var newSectionName: String = "New Name"
     @State private var deleteSection: Bool = false
     @State private var currentLibraryItem: LibraryItem?
     
@@ -34,19 +36,21 @@ struct LibraryView: View {
                             LibraryItemView(of: libraryItem)
                         }
                         .contextMenu {
-                            Button {
-    
-                            } label: {
-                                Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
+                            if !libraryItem.isSystemItem {
+                                Button {
+                                    currentLibraryItem = libraryItem
+                                    renameSection = true
+                                } label: {
+                                    Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
+                                }
+        
+                                Button(role: .destructive) {
+                                    currentLibraryItem = libraryItem
+                                    deleteSection = true
+                                } label: {
+                                    Label("Delete", systemImage: "trash.fill")
+                                }
                             }
-    
-                            Button(role: .destructive) {
-                                currentLibraryItem = libraryItem
-                                deleteSection = true
-                            } label: {
-                                Label("Delete", systemImage: "trash.fill")
-                            }
-                            .disabled(libraryItem.isSystemItem)
                         }
                         
                         if let lastItemId = libraryItems.last, libraryItem.id != lastItemId.id {
@@ -58,20 +62,46 @@ struct LibraryView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .scrollIndicators(.hidden)
-            .alert("Delete Category?", isPresented: $deleteSection, actions: {
-                Button("Delete", role: .destructive) {
-                    if let libraryItem = currentLibraryItem {
-                        modelContext.delete(libraryItem)
-                    }
+            .alert("Delete Category?", isPresented: $deleteSection) {
+                Button("Cancel") {
                     currentLibraryItem = nil
                     deleteSection = false
                 }
-            }, message: {
+                
+                Button("Delete") {
+                    if let libraryItem = currentLibraryItem {
+                        modelContext.delete(libraryItem)
+                    }
+                    
+                    currentLibraryItem = nil
+                    deleteSection = false
+                }
+            } message: {
                 Text("Do you actually want to delete this category? This action does not affect included content")
-            })
+            }
+            .alert("Rename Category", isPresented: $renameSection) {
+                TextField("Give new name...", text: $newSectionName)
+                
+                HStack {
+                    Button("Cancel") {
+                        currentLibraryItem = nil
+                        renameSection = false
+                    }
+                    
+                    Button("Rename") {
+                        if let libraryItem = currentLibraryItem {
+                            libraryItem.title = newSectionName
+                            try? modelContext.save()
+                        }
+                        
+                        currentLibraryItem = nil
+                        renameSection = false
+                    }
+                }
+            }
             .sheet(isPresented: $addsNewSection) {
                 NewLibrarySectionView()
-                    .presentationDetents([.height(300)])
+                    .presentationDetents([.height(280)])
             }
         }
     }
