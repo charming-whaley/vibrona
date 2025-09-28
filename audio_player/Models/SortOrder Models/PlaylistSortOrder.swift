@@ -1,6 +1,6 @@
 import SwiftUI
 
-@frozen public enum SortOrder: String, Identifiable, CaseIterable {
+@frozen public enum PlaylistSortOrder: String, Identifiable, CaseIterable {
     case title, dateAdded
     
     public var id: Self {

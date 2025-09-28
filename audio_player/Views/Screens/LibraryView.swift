@@ -5,7 +5,7 @@ struct LibraryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var libraryItems: [LibraryItem]
     @State private var addsNewSection: Bool = false
-    @State private var sortOrder: SortOrder = .title
+    @State private var sortOrder: LibrarySortOrder = .title
     
     @State private var renameSection: Bool = false
     @State private var newSectionName: String = "New Name"

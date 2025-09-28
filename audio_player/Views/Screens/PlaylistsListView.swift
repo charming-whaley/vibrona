@@ -5,45 +5,68 @@ struct PlaylistsListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query var playlists: [Playlist]
     
+    @State private var sortOrder: PlaylistSortOrder = .title
     @State private var currentPlaylist: Playlist?
     @State private var addNewPlaylist: Bool = false
     @State private var deletePlaylist: Bool = false
     
+    init() {
+        let sortDescriptors: [SortDescriptor<Playlist>] = switch sortOrder {
+        case .title:
+            [SortDescriptor(\Playlist.title)]
+        case .dateAdded:
+            [SortDescriptor(\Playlist.dateAdded)]
+        }
+        
+        _playlists = Query(sort: sortDescriptors)
+    }
+    
     var body: some View {
         NavigationStack {
-            ScrollView(.vertical) {
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)], spacing: 15) {
-                    ForEach(playlists) { playlist in
-                        NavigationLink {
-                            // Navigation to songs list
-                        } label: {
-                            MiniPlaylistItemView(item: playlist)
-                        }
-                        .contextMenu {
-                            Button {
-                                
-                            } label: {
-                                Label("Edit", systemImage: "rectangle.and.pencil.and.ellipsis")
+            Group {
+                if playlists.isEmpty {
+                    ContentUnavailableView("No Playlists...", systemImage: "music.note.list")
+                } else {
+                    ScrollView(.vertical) {
+                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)], spacing: 15) {
+                            ForEach(playlists) { playlist in
+                                NavigationLink {
+                                    // Navigation to songs list
+                                } label: {
+                                    MiniPlaylistItemView(item: playlist)
+                                }
+                                .contextMenu {
+                                    Button {
+                                        
+                                    } label: {
+                                        Label("Edit", systemImage: "rectangle.and.pencil.and.ellipsis")
+                                    }
+                                    
+                                    Button(role: .destructive) {
+                                        currentPlaylist = playlist
+                                        deletePlaylist = true
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
                             }
-                            
-                            Button(role: .destructive) {
-                                currentPlaylist = playlist
-                                deletePlaylist = true
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
                         }
+                        .padding(.horizontal)
                     }
+                    .contentMargins([.top, .bottom], 15)
                 }
-                .padding(.horizontal)
             }
-            .contentMargins([.top, .bottom], 15)
             .navigationTitle("Playlists")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        
+                    Menu {
+                        Picker("", selection: $sortOrder) {
+                            ForEach(PlaylistSortOrder.allCases) { playlistSortOrder in
+                                Text("Sort by \(playlistSortOrder.description)")
+                                    .tag(playlistSortOrder)
+                            }
+                        }
                     } label: {
                         Image(systemName: "line.3.horizontal.decrease.circle")
                     }
