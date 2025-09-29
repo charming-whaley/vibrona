@@ -9,6 +9,9 @@ final class LibraryItem {
     var isSystemItem: Bool
     var libraryItemType: LibraryItemType
     
+    @Relationship(deleteRule: .cascade) var playlists: [Playlist]? = nil
+    @Relationship(deleteRule: .cascade) var songs: [Song]? = nil
+    
     init(title: String, systemImage: String, libraryItemType: LibraryItemType, isSystemItem: Bool) {
         self.title = title
         self.systemImage = systemImage

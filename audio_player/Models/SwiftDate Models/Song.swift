@@ -12,8 +12,7 @@ final class Song {
     var playCount: Int
     var lastPlayed: Date?
     
-    @Relationship(deleteRule: .nullify, inverse: \Playlist.songs)
-    var playlists: [Playlist] = []
+    @Relationship(deleteRule: .nullify, inverse: \Playlist.songs) var playlists: [Playlist] = []
     
     init(
         title: String,

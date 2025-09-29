@@ -7,8 +7,7 @@ final class Playlist {
     var details: String?
     var dateAdded: Date
     
-    @Relationship(deleteRule: .nullify)
-    var songs: [Song] = []
+    @Relationship(deleteRule: .nullify) var songs: [Song] = []
     
     init(title: String, details: String? = nil, dateAdded: Date = .now) {
         self.title = title

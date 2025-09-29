@@ -12,7 +12,7 @@ import SwiftUI
         case .playlist:
             return "Playlist"
         case .songs:
-            return "Songs list"
+            return "Songs"
         }
     }
 }

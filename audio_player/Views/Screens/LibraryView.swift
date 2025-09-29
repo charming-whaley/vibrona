@@ -31,7 +31,20 @@ struct LibraryView: View {
                     
                     ForEach(libraryItems) { libraryItem in
                         NavigationLink {
-                            // Link to the Section
+                            switch libraryItem.libraryItemType {
+                            case .songs:
+                                if libraryItem.isSystemItem {
+                                    GlobalSongsListView()
+                                } else {
+                                    Text("To be added soon...")
+                                }
+                            case .playlist:
+                                if libraryItem.isSystemItem {
+                                    GlobalPlaylistsListView()
+                                } else {
+                                    Text("To be added soon...")
+                                }
+                            }
                         } label: {
                             LibraryItemView(of: libraryItem)
                         }
