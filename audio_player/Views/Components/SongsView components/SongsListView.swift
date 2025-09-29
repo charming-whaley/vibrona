@@ -2,55 +2,72 @@ import SwiftUI
 import SwiftData
 
 struct SongsListView: View {
-    @Query var songs: [Song]
+    @Bindable var libraryItem: LibraryItem
+    @State private var songsSortOrder: SongSortOrder = .title
+    @State private var searchQuery: String = ""
     
-    init(songsSortOrder: SongSortOrder, searchQuery: String) {
-        let sortDescriptors: [SortDescriptor<Song>] = switch songsSortOrder {
+    var processedSongsList: [Song] {
+        var filteredSongsList = [Song]()
+        if let songs = libraryItem.songs {
+            if searchQuery.isEmpty {
+                filteredSongsList = songs
+            } else {
+                filteredSongsList = songs.filter { song in
+                    song.title.localizedStandardContains(searchQuery) || song.artist.localizedStandardContains(searchQuery) || searchQuery.isEmpty
+                }
+            }
+        }
+        
+        let sortedSongsList = switch songsSortOrder {
         case .title:
-            [SortDescriptor(\Song.title)]
+            filteredSongsList.sorted { $0.title < $1.title }
         case .artist:
-            [SortDescriptor(\Song.artist)]
+            filteredSongsList.sorted { $0.artist < $1.artist }
         case .dateAdded:
-            [SortDescriptor(\Song.dateAdded)]
+            filteredSongsList.sorted { $0.dateAdded < $1.dateAdded }
         case .playCount:
-            [SortDescriptor(\Song.playCount)]
+            filteredSongsList.sorted { $0.playCount < $1.playCount }
         }
         
-        let predicate = #Predicate<Song> { song in
-            return song.title.localizedStandardContains(searchQuery)
-            || song.artist.localizedStandardContains(searchQuery)
-            || searchQuery.isEmpty
-        }
-        
-        _songs = Query(filter: predicate, sort: sortDescriptors)
+        return sortedSongsList
     }
     
     var body: some View {
-        Group {
-            if songs.isEmpty {
-                ContentUnavailableView("No Songs...", systemImage: "music.note.list")
-            } else {
-                ScrollView(.vertical) {
-                    LazyVStack {
-                        ForEach(songs) { song in
-                            Button {
-                                
-                            } label: {
-                                SongItemView(song: song)
+        NavigationStack {
+            Group {
+                if processedSongsList.isEmpty {
+                    ContentUnavailableView("No Songs...", systemImage: "music.note.list")
+                } else {
+                    ScrollView(.vertical) {
+                        LazyVStack {
+                            ForEach(processedSongsList) { song in
+                                Button {
+                                    // an action for song to be played...
+                                } label: {
+                                    SongItemView(song: song)
+                                }
                             }
                         }
                     }
                 }
             }
+            .navigationTitle("Songs")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $searchQuery, prompt: Text("Search songs..."))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Picker("", selection: $songsSortOrder) {
+                            ForEach(SongSortOrder.allCases) { songSortOrder in
+                                Text("Sort by \(songSortOrder.description)")
+                                    .tag(songSortOrder)
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                    }
+                }
+            }
         }
     }
-}
-
-#Preview {
-    let preview = PreviewContainer(Song.self)
-    preview.insert(Song.songs)
-    
-    return SongsListView(songsSortOrder: .title, searchQuery: "The Weeknd")
-        .preferredColorScheme(.dark)
-        .modelContainer(preview.container)
 }

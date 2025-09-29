@@ -21,12 +21,11 @@ struct GlobalPlaylistsListView: View {
             }
         }
         
-        var sortedPlaylistsList = [Playlist]()
-        switch playlistsSortOrder {
+        let sortedPlaylistsList = switch playlistsSortOrder {
         case .title:
-            sortedPlaylistsList = filteredPlaylistsList.sorted { $0.title < $1.title }
+            filteredPlaylistsList.sorted { $0.title < $1.title }
         case .dateAdded:
-            sortedPlaylistsList = filteredPlaylistsList.sorted { $0.dateAdded < $1.dateAdded }
+            filteredPlaylistsList.sorted { $0.dateAdded < $1.dateAdded }
         }
         return sortedPlaylistsList
     }

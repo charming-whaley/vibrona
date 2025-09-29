@@ -108,12 +108,3 @@ struct PlaylistsListView: View {
         }
     }
 }
-
-#Preview {
-    let preview = PreviewContainer(Playlist.self)
-    preview.insert(Playlist.playlists)
-    
-    return PlaylistsListView()
-        .preferredColorScheme(.dark)
-        .modelContainer(preview.container)
-}

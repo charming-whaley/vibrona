@@ -36,7 +36,7 @@ struct LibraryView: View {
                                 if libraryItem.isSystemItem {
                                     GlobalSongsListView()
                                 } else {
-                                    Text("To be added soon...")
+                                    SongsListView(libraryItem: libraryItem)
                                 }
                             case .playlist:
                                 if libraryItem.isSystemItem {

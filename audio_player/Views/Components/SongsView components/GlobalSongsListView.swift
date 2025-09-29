@@ -17,16 +17,15 @@ struct GlobalSongsListView: View {
             }
         }
         
-        var sortedSongsList = [Song]()
-        switch songsSortOrder {
+        let sortedSongsList = switch songsSortOrder {
         case .title:
-            sortedSongsList = filteredSongsList.sorted { $0.title < $1.title }
+            filteredSongsList.sorted { $0.title < $1.title }
         case .artist:
-            sortedSongsList = filteredSongsList.sorted { $0.artist < $1.artist }
+            filteredSongsList.sorted { $0.artist < $1.artist }
         case .dateAdded:
-            sortedSongsList = filteredSongsList.sorted { $0.dateAdded < $1.dateAdded }
+            filteredSongsList.sorted { $0.dateAdded < $1.dateAdded }
         case .playCount:
-            sortedSongsList = filteredSongsList.sorted { $0.playCount < $1.playCount }
+            filteredSongsList.sorted { $0.playCount < $1.playCount }
         }
         
         return sortedSongsList
