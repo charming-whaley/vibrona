@@ -5,7 +5,7 @@ import SwiftData
 final class Song {
     @Attribute(.unique) var id: UUID
     var title: String
-    var artist: String?
+    var artist: String
     var duration: TimeInterval?
     var filePath: String
     var dateAdded: Date
@@ -17,7 +17,7 @@ final class Song {
     
     init(
         title: String,
-        artist: String? = nil,
+        artist: String,
         duration: TimeInterval? = nil,
         filePath: String,
         dateAdded: Date = .now,
