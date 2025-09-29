@@ -16,7 +16,7 @@ struct SongItemView: View {
                         .font(.headline)
                         .foregroundStyle(.white)
                     
-                    Text("\(song.artist ?? "No artist")")
+                    Text("\(song.artist)")
                         .font(.caption)
                         .foregroundStyle(.gray)
                 }
