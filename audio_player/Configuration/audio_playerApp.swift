@@ -21,12 +21,6 @@ struct audio_playerApp: App {
             if let systemItems = try? context.fetch(fetchDescriptor), systemItems.isEmpty {
                 let defaultItems: [LibraryItem] = [
                     .init(
-                        title: "Liked",
-                        systemImage: "heart.fill",
-                        libraryItemType: .songs,
-                        isSystemItem: true
-                    ),
-                    .init(
                         title: "Songs",
                         systemImage: "music.note",
                         libraryItemType: .songs,

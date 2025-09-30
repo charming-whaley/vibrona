@@ -91,6 +91,7 @@ struct PlaylistView: View {
                         }
                     }
                 }
+                .padding(.bottom, 20)
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
