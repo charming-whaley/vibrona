@@ -6,9 +6,14 @@ struct MiniPlaylistItemView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Rectangle()
-                .fill(.white)
+                .fill(Color("AppDarkGrayColor"))
                 .clipShape(.rect(cornerRadius: 12))
                 .frame(height: 160)
+                .overlay(alignment: .center) {
+                    Image(systemName: "music.note")
+                        .font(.largeTitle)
+                        .foregroundStyle(.gray)
+                }
             
             HStack {
                 Text(item.title)

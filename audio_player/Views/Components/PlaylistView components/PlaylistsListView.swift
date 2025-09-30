@@ -1,8 +1,6 @@
 import SwiftUI
 import SwiftData
 
-/// TODO: Update the playlists list, insertion into the context
-
 struct PlaylistsListView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var libraryItem: LibraryItem
@@ -73,6 +71,7 @@ struct PlaylistsListView: View {
             }
             .navigationTitle(libraryItem.title)
             .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $searchQuery, prompt: Text("Search playlists..."))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
