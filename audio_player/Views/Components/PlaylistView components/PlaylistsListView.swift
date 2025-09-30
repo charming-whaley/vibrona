@@ -1,37 +1,52 @@
 import SwiftUI
 import SwiftData
 
+/// TODO: Update the playlists list, insertion into the context
+
 struct PlaylistsListView: View {
     @Environment(\.modelContext) private var modelContext
+    @Bindable var libraryItem: LibraryItem
     @Query var playlists: [Playlist]
     
-    @State private var sortOrder: PlaylistSortOrder = .title
+    @State private var playlistsSortOrder: PlaylistSortOrder = .title
     @State private var currentPlaylist: Playlist?
     @State private var addNewPlaylist: Bool = false
     @State private var deletePlaylist: Bool = false
+    @State private var searchQuery: String = ""
     
-    init() {
-        let sortDescriptors: [SortDescriptor<Playlist>] = switch sortOrder {
-        case .title:
-            [SortDescriptor(\Playlist.title)]
-        case .dateAdded:
-            [SortDescriptor(\Playlist.dateAdded)]
+    var processedSongsList: [Playlist] {
+        var filteredSongsList = [Playlist]()
+        if let playlists = libraryItem.playlists {
+            if searchQuery.isEmpty {
+                filteredSongsList = playlists
+            } else {
+                filteredSongsList = playlists.filter { song in
+                    song.title.localizedStandardContains(searchQuery) || searchQuery.isEmpty
+                }
+            }
         }
         
-        _playlists = Query(sort: sortDescriptors)
+        let sortedPlaylistsList = switch playlistsSortOrder {
+        case .title:
+            filteredSongsList.sorted { $0.title < $1.title }
+        case .dateAdded:
+            filteredSongsList.sorted { $0.dateAdded < $1.dateAdded }
+        }
+        
+        return sortedPlaylistsList
     }
     
     var body: some View {
         NavigationStack {
             Group {
-                if playlists.isEmpty {
+                if processedSongsList.isEmpty {
                     ContentUnavailableView("No Playlists...", systemImage: "music.note.list")
                 } else {
                     ScrollView(.vertical) {
                         LazyVGrid(columns: [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)], spacing: 15) {
-                            ForEach(playlists) { playlist in
+                            ForEach(processedSongsList) { playlist in
                                 NavigationLink {
-                                    // Navigation to songs list
+                                    PlaylistView(playlist: playlist)
                                 } label: {
                                     MiniPlaylistItemView(item: playlist)
                                 }
@@ -56,12 +71,12 @@ struct PlaylistsListView: View {
                     .contentMargins([.top, .bottom], 15)
                 }
             }
-            .navigationTitle("Playlists")
+            .navigationTitle(libraryItem.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        Picker("", selection: $sortOrder) {
+                        Picker("", selection: $playlistsSortOrder) {
                             ForEach(PlaylistSortOrder.allCases) { playlistSortOrder in
                                 Text("Sort by \(playlistSortOrder.description)")
                                     .tag(playlistSortOrder)
@@ -90,6 +105,7 @@ struct PlaylistsListView: View {
                 
                 Button {
                     if let playlist = currentPlaylist {
+                        libraryItem.playlists?.removeAll { $0 == playlist }
                         modelContext.delete(playlist)
                     }
                     
@@ -102,7 +118,7 @@ struct PlaylistsListView: View {
                 Text("Do you actually want to delete this playlist? No songs will be affected by this action")
             }
             .sheet(isPresented: $addNewPlaylist) {
-                NewPlaylistView()
+                NewPlaylistView(libraryItem: libraryItem)
                     .presentationDetents([.medium])
             }
         }

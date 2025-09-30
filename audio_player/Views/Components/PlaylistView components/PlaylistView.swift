@@ -1,8 +1,15 @@
-//
-//  PlaylistView.swift
-//  audio_player
-//
-//  Created by Fedya Katkov on 9/28/25.
-//
+import SwiftUI
 
-import Foundation
+struct PlaylistView: View {
+    let playlist: Playlist
+    
+    var body: some View {
+        VStack {
+            Text(playlist.title)
+        }
+    }
+}
+
+#Preview {
+    PlaylistView(playlist: .init(title: "Some funny playlist"))
+}

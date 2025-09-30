@@ -5,8 +5,13 @@ struct NewPlaylistView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     
+    let libraryItem: LibraryItem?
     @State private var title: String = "New Playlist"
     @State private var details: String = ""
+    
+    init(libraryItem: LibraryItem? = nil) {
+        self.libraryItem = libraryItem
+    }
     
     var body: some View {
         NavigationStack {
@@ -50,7 +55,23 @@ struct NewPlaylistView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        modelContext.insert(Playlist(title: title, details: details))
+                        let playlist = Playlist(title: title, details: details)
+                        modelContext.insert(playlist)
+                        
+                        if let libraryItem = libraryItem {
+                            if libraryItem.playlists == nil {
+                                libraryItem.playlists = [playlist]
+                            } else {
+                                libraryItem.playlists?.append(playlist)
+                            }
+                        }
+                        
+                        do {
+                            try modelContext.save()
+                        } catch {
+                            print("[Fatal error]: couldn't resolve the operation. The reason is\n\(error)")
+                        }
+                        
                         dismiss()
                     } label: {
                         Text("Create")

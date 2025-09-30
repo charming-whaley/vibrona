@@ -42,7 +42,7 @@ struct LibraryView: View {
                                 if libraryItem.isSystemItem {
                                     GlobalPlaylistsListView()
                                 } else {
-                                    Text("To be added soon...")
+                                    PlaylistsListView(libraryItem: libraryItem)
                                 }
                             }
                         } label: {

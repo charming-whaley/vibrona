@@ -40,7 +40,7 @@ struct GlobalPlaylistsListView: View {
                         LazyVGrid(columns: [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)], spacing: 15) {
                             ForEach(processedPlaylistsList) { playlist in
                                 NavigationLink {
-                                    // Navigation to songs list
+                                    PlaylistView(playlist: playlist)
                                 } label: {
                                     MiniPlaylistItemView(item: playlist)
                                 }
