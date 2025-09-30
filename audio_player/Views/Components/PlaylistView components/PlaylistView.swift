@@ -3,7 +3,6 @@ import SwiftData
 
 struct PlaylistView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query var songs: [Song]
     
     @State private var addsSongsToPlaylist: Bool = false
     @State private var songsSortOrder: SongSortOrder = .title
@@ -64,7 +63,32 @@ struct PlaylistView: View {
                 
                 LazyVStack(spacing: 16) {
                     ForEach(processedSongsList) { song in
-                        SongItemView(song: song)
+                        SongItemView(song: song) {
+                            Menu {
+                                Button {
+                                    
+                                } label: {
+                                    Label("Play next", systemImage: "play.fill")
+                                }
+                                
+                                Button {
+                                    
+                                } label: {
+                                    Label("Hide", systemImage: "eye.slash.fill")
+                                }
+                                
+                                Button(role: .destructive) {
+                                    
+                                } label: {
+                                    Label("Delete", systemImage: "trash.fill")
+                                }
+                            } label: {
+                                Image(systemName: "ellipsis")
+                                    .font(.title2)
+                                    .foregroundStyle(.white)
+                                    .contentShape(.rect)
+                            }
+                        }
                     }
                 }
             }
@@ -83,9 +107,7 @@ struct PlaylistView: View {
                 }
             }
             .sheet(isPresented: $addsSongsToPlaylist) {
-                VStack {
-                    Text("Hello, people!!!")
-                }
+                PlaylistSongSelectionView(playlist: playlist)
             }
         }
     }

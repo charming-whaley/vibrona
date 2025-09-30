@@ -1,8 +1,15 @@
 import SwiftUI
 
-struct SongItemView: View {
+struct SongItemView<Actions>: View where Actions: View {
     var song: Song
-    var size: CGSize = .init(width: 35, height: 35)
+    var size: CGSize
+    var actions: Actions
+    
+    init(song: Song, size: CGSize = .init(width: 35, height: 35), actions: @escaping () -> Actions) {
+        self.song = song
+        self.size = size
+        self.actions = actions()
+    }
     
     var body: some View {
         HStack(spacing: 15) {
@@ -24,36 +31,7 @@ struct SongItemView: View {
             
             Spacer()
             
-            Menu {
-                Button(role: .destructive) {
-                    
-                } label: {
-                    Label("Delete", systemImage: "trash.fill")
-                }
-                
-                Button {
-                    
-                } label: {
-                    Label("Song details", systemImage: "info.circle")
-                }
-                
-                Button {
-                    
-                } label: {
-                    Label("Hide", systemImage: "eye.slash.fill")
-                }
-                
-                Button {
-                    
-                } label: {
-                    Label("Play next", systemImage: "play.fill")
-                }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.title2)
-                    .foregroundStyle(.white)
-                    .contentShape(.rect)
-            }
+            actions
         }
         .padding()
         .background {
@@ -66,6 +44,8 @@ struct SongItemView: View {
 }
 
 #Preview {
-    SongItemView(song: .init(title: "Welcome to New York", artist: "Taylor Swift", filePath: ""))
-        .preferredColorScheme(.dark)
+    SongItemView(song: .init(title: "Welcome to New York", artist: "Taylor Swift", filePath: "")) {
+        VStack {  }
+    }
+    .preferredColorScheme(.dark)
 }

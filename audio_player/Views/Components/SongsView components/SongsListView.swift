@@ -44,7 +44,26 @@ struct SongsListView: View {
                                 Button {
                                     // an action for song to be played...
                                 } label: {
-                                    SongItemView(song: song)
+                                    SongItemView(song: song) {
+                                        Menu {
+                                            Button {
+                                                
+                                            } label: {
+                                                Label("Play next", systemImage: "play.fill")
+                                            }
+                                            
+                                            Button {
+                                                
+                                            } label: {
+                                                Label("Add to Playlist", systemImage: "music.pages.fill")
+                                            }
+                                        } label: {
+                                            Image(systemName: "ellipsis")
+                                                .font(.title2)
+                                                .foregroundStyle(.white)
+                                                .contentShape(.rect)
+                                        }
+                                    }
                                 }
                             }
                         }
