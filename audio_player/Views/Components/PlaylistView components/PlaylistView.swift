@@ -61,7 +61,7 @@ struct PlaylistView: View {
                     AddSongToPlaylistButtonView()
                 }
                 
-                LazyVStack(spacing: 16) {
+                LazyVStack {
                     ForEach(processedSongsList) { song in
                         SongItemView(song: song) {
                             Menu {

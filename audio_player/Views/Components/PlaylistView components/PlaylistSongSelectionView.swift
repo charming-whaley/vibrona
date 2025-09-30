@@ -26,17 +26,22 @@ struct PlaylistSongSelectionView: View {
         NavigationStack {
             LazyVStack {
                 ForEach(processedSongsList) { song in
-                    Button {
-                        playlist.songs.append(song)
-                        do {
-                            try modelContext.save()
-                        } catch {
-                            print("[Fatal error]: couldn't update the model context due to:\n\n\(error)")
-                        }
-                    } label: {
-                        SongItemView(song: song) {
-                            Image(systemName: "plus.circle")
-                                .font(.headline)
+                    SongItemView(song: song) {
+                        Button {
+                            if let index = playlist.songs.firstIndex(where: { $0.id == song.id }) {
+                                playlist.songs.remove(at: index)
+                            } else {
+                                playlist.songs.append(song)
+                            }
+                            
+                            do {
+                                try modelContext.save()
+                            } catch {
+                                print("[Fatal error]: couldn't update the model context due to:\n\n\(error)")
+                            }
+                        } label: {
+                            Image(systemName: playlist.songs.contains(where: { $0.id == song.id }) ? "plus.circle.fill" : "plus.circle")
+                                .font(.system(size: 20))
                                 .foregroundStyle(.white)
                         }
                     }
