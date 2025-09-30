@@ -6,8 +6,34 @@ struct PlaylistView: View {
     @Query var songs: [Song]
     
     @State private var addsSongsToPlaylist: Bool = false
+    @State private var songsSortOrder: SongSortOrder = .title
+    @State private var searchQuery: String = ""
     
     let playlist: Playlist
+    
+    var processedSongsList: [Song] {
+        var filteredSongsList = [Song]()
+        if searchQuery.isEmpty {
+            filteredSongsList = playlist.songs
+        } else {
+            filteredSongsList = playlist.songs.filter { song in
+                song.title.localizedStandardContains(searchQuery) || song.artist.localizedStandardContains(searchQuery) || searchQuery.isEmpty
+            }
+        }
+        
+        let sortedSongsList = switch songsSortOrder {
+        case .title:
+            filteredSongsList.sorted { $0.title < $1.title }
+        case .artist:
+            filteredSongsList.sorted { $0.artist < $1.artist }
+        case .dateAdded:
+            filteredSongsList.sorted { $0.dateAdded < $1.dateAdded }
+        case .playCount:
+            filteredSongsList.sorted { $0.playCount < $1.playCount }
+        }
+        
+        return sortedSongsList
+    }
     
     var body: some View {
         NavigationStack {
@@ -28,6 +54,7 @@ struct PlaylistView: View {
                     .padding(.bottom, 12)
                 
                 Divider()
+                    .padding(.horizontal)
                 
                 Button {
                     addsSongsToPlaylist.toggle()
@@ -35,14 +62,21 @@ struct PlaylistView: View {
                     AddSongToPlaylistButtonView()
                 }
                 
-                ForEach(playlist.songs) { song in
-                    SongItemView(song: song)
+                LazyVStack(spacing: 16) {
+                    ForEach(processedSongsList) { song in
+                        SongItemView(song: song)
+                    }
                 }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        
+                        Picker("", selection: $songsSortOrder) {
+                            ForEach(SongSortOrder.allCases) { songSortOrder in
+                                Text("Sort by \(songSortOrder.description)")
+                                    .tag(songSortOrder)
+                            }
+                        }
                     } label: {
                         Image(systemName: "line.3.horizontal.decrease.circle")
                     }
