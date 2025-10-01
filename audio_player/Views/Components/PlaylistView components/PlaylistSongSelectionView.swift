@@ -4,7 +4,7 @@ import SwiftData
 struct PlaylistSongSelectionView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Query var songs: [Song]
+    @Query(sort: \Song.dateAdded) var songs: [Song]
     
     @Bindable var playlist: Playlist
     @State private var searchQuery: String = ""
@@ -24,33 +24,41 @@ struct PlaylistSongSelectionView: View {
     
     var body: some View {
         NavigationStack {
-            LazyVStack {
-                ForEach(processedSongsList) { song in
-                    SongItemView(song: song) {
-                        Button {
-                            if let index = playlist.songs.firstIndex(where: { $0.id == song.id }) {
-                                playlist.songs.remove(at: index)
-                            } else {
-                                playlist.songs.append(song)
+            Group {
+                if songs.isEmpty {
+                    ContentUnavailableView("No Songs Yet...", systemImage: "music.note.list")
+                } else {
+                    ScrollView(.vertical) {
+                        LazyVStack {
+                            ForEach(processedSongsList) { song in
+                                SongItemView(song: song) {
+                                    Button {
+                                        if let index = playlist.songs.firstIndex(where: { $0.id == song.id }) {
+                                            playlist.songs.remove(at: index)
+                                        } else {
+                                            playlist.songs.append(song)
+                                        }
+                                        
+                                        do {
+                                            try modelContext.save()
+                                        } catch {
+                                            print("[Fatal error]: couldn't update the model context due to:\n\n\(error)")
+                                        }
+                                    } label: {
+                                        Image(systemName: playlist.songs.contains(where: { $0.id == song.id }) ? "plus.circle.fill" : "plus.circle")
+                                            .font(.system(size: 20))
+                                            .foregroundStyle(.white)
+                                    }
+                                }
                             }
-                            
-                            do {
-                                try modelContext.save()
-                            } catch {
-                                print("[Fatal error]: couldn't update the model context due to:\n\n\(error)")
-                            }
-                        } label: {
-                            Image(systemName: playlist.songs.contains(where: { $0.id == song.id }) ? "plus.circle.fill" : "plus.circle")
-                                .font(.system(size: 20))
-                                .foregroundStyle(.white)
                         }
                     }
                 }
             }
             .searchable(text: $searchQuery, prompt: Text("Search songs..."))
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", role: .destructive) {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
                         dismiss()
                     }
                 }

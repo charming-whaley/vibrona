@@ -6,6 +6,7 @@ struct GlobalSongsListView: View {
     
     @State private var songsSortOrder: SongSortOrder = .title
     @State private var searchQuery: String = ""
+    @State private var currentSong: Song?
     
     var processedSongsList: [Song] {
         var filteredSongsList = [Song]()
@@ -41,7 +42,7 @@ struct GlobalSongsListView: View {
                         LazyVStack {
                             ForEach(processedSongsList) { song in
                                 Button {
-                                    // an action for song to be played...
+                                    
                                 } label: {
                                     SongItemView(song: song) {
                                         Menu {
@@ -52,7 +53,7 @@ struct GlobalSongsListView: View {
                                             }
                                             
                                             Button {
-                                                
+                                                currentSong = song
                                             } label: {
                                                 Label("Add to Playlist", systemImage: "music.pages.fill")
                                             }
@@ -86,6 +87,9 @@ struct GlobalSongsListView: View {
                     }
                 }
             }
+            .sheet(item: $currentSong, content: { song in
+                SongPlaylistSelectionView(song: song)
+            })
         }
     }
 }

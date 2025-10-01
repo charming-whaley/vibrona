@@ -5,6 +5,7 @@ struct SongsListView: View {
     @Bindable var libraryItem: LibraryItem
     @State private var songsSortOrder: SongSortOrder = .title
     @State private var searchQuery: String = ""
+    @State private var currentSong: Song?
     
     var processedSongsList: [Song] {
         var filteredSongsList = [Song]()
@@ -53,7 +54,7 @@ struct SongsListView: View {
                                             }
                                             
                                             Button {
-                                                
+                                                currentSong = song
                                             } label: {
                                                 Label("Add to Playlist", systemImage: "music.pages.fill")
                                             }
@@ -87,6 +88,9 @@ struct SongsListView: View {
                     }
                 }
             }
+            .sheet(item: $currentSong, content: { song in
+                SongPlaylistSelectionView(song: song)
+            })
         }
     }
 }
