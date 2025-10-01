@@ -43,7 +43,7 @@ struct PlaylistView: View {
                     .frame(width: 300, height: 300)
                     .overlay(alignment: .center) {
                         Image(systemName: "music.note")
-                            .font(.largeTitle)
+                            .font(.system(size: 50))
                             .foregroundStyle(.gray)
                     }
                     .padding(16)
@@ -61,37 +61,42 @@ struct PlaylistView: View {
                     AddSongToPlaylistButtonView()
                 }
                 
-                LazyVStack {
-                    ForEach(processedSongsList) { song in
-                        SongItemView(song: song) {
-                            Menu {
-                                Button {
+                if processedSongsList.isEmpty {
+                    ContentUnavailableView("No Songs...", systemImage: "music.note.list")
+                        .padding(.vertical, 40)
+                } else {
+                    LazyVStack {
+                        ForEach(processedSongsList) { song in
+                            SongItemView(song: song) {
+                                Menu {
+                                    Button {
+                                        
+                                    } label: {
+                                        Label("Play next", systemImage: "play.fill")
+                                    }
                                     
-                                } label: {
-                                    Label("Play next", systemImage: "play.fill")
-                                }
-                                
-                                Button {
+                                    Button {
+                                        
+                                    } label: {
+                                        Label("Hide", systemImage: "eye.slash.fill")
+                                    }
                                     
+                                    Button(role: .destructive) {
+                                        
+                                    } label: {
+                                        Label("Delete", systemImage: "trash.fill")
+                                    }
                                 } label: {
-                                    Label("Hide", systemImage: "eye.slash.fill")
+                                    Image(systemName: "ellipsis")
+                                        .font(.title2)
+                                        .foregroundStyle(.white)
+                                        .contentShape(.rect)
                                 }
-                                
-                                Button(role: .destructive) {
-                                    
-                                } label: {
-                                    Label("Delete", systemImage: "trash.fill")
-                                }
-                            } label: {
-                                Image(systemName: "ellipsis")
-                                    .font(.title2)
-                                    .foregroundStyle(.white)
-                                    .contentShape(.rect)
                             }
                         }
                     }
+                    .padding(.bottom, 20)
                 }
-                .padding(.bottom, 20)
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

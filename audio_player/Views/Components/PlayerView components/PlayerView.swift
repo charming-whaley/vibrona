@@ -52,8 +52,14 @@ struct PlayerView: View {
             
             VStack(spacing: 50) {
                 Rectangle()
-                    .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.width - 50)
+                    .fill(Color("AppDarkGrayColor"))
                     .clipShape(.rect(cornerRadius: 15))
+                    .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.width - 50)
+                    .overlay(alignment: .center) {
+                        Image(systemName: "music.note")
+                            .font(.system(size: 70))
+                            .foregroundStyle(.gray)
+                    }
                 
                 VStack(spacing: 15) {
                     HStack(spacing: 0) {

@@ -5,7 +5,7 @@ struct SongItemView<Actions>: View where Actions: View {
     var size: CGSize
     var actions: Actions
     
-    init(song: Song, size: CGSize = .init(width: 35, height: 35), actions: @escaping () -> Actions) {
+    init(song: Song, size: CGSize = .init(width: 40, height: 40), actions: @escaping () -> Actions) {
         self.song = song
         self.size = size
         self.actions = actions()
@@ -14,11 +14,17 @@ struct SongItemView<Actions>: View where Actions: View {
     var body: some View {
         HStack(spacing: 15) {
             HStack(spacing: 12) {
-                RoundedRectangle(cornerRadius: size.height / 4)
-                    .fill(.blue.gradient)
+                Rectangle()
+                    .fill(.black)
+                    .clipShape(.rect(cornerRadius: size.height / 4))
                     .frame(width: size.width, height: size.height)
+                    .overlay(alignment: .center) {
+                        Image(systemName: "music.note")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+                    }
                 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(song.title)
                         .font(.headline)
                         .foregroundStyle(.white)

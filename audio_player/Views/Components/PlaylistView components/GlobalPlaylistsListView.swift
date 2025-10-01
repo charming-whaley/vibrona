@@ -10,6 +10,8 @@ struct GlobalPlaylistsListView: View {
     @State private var currentPlaylist: Playlist?
     @State private var addNewPlaylist: Bool = false
     @State private var deletePlaylist: Bool = false
+    @State private var renamePlaylist: Bool = false
+    @State private var newPlaylistName: String = "New playlist name"
     
     var processedPlaylistsList: [Playlist] {
         var filteredPlaylistsList = [Playlist]()
@@ -46,9 +48,10 @@ struct GlobalPlaylistsListView: View {
                                 }
                                 .contextMenu {
                                     Button {
-                                        
+                                        currentPlaylist = playlist
+                                        renamePlaylist = true
                                     } label: {
-                                        Label("Edit", systemImage: "rectangle.and.pencil.and.ellipsis")
+                                        Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
                                     }
                                     
                                     Button(role: .destructive) {
@@ -110,6 +113,27 @@ struct GlobalPlaylistsListView: View {
                 }
             } message: {
                 Text("Do you actually want to delete this playlist? No songs will be affected by this action")
+            }
+            .alert("Rename playlist", isPresented: $renamePlaylist) {
+                TextField("Give new name", text: $newPlaylistName)
+                
+                Button("Cancel") {
+                    currentPlaylist = nil
+                    renamePlaylist = false
+                }
+                
+                Button("Rename") {
+                    currentPlaylist?.title = newPlaylistName
+                    
+                    do {
+                        try modelContext.save()
+                    } catch {
+                        print("[Fatal error]: couldn't rename the playlist:\n\n\(error)")
+                    }
+                    
+                    currentPlaylist = nil
+                    renamePlaylist = false
+                }
             }
             .sheet(isPresented: $addNewPlaylist) {
                 NewPlaylistView()

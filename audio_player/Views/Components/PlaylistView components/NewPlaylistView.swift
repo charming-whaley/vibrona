@@ -28,17 +28,6 @@ struct NewPlaylistView: View {
                     }
                     .padding(.bottom, 20)
                 
-                Text("Details (Optional)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                TextField("Some inspirational words...", text: $details)
-                    .overlay(alignment: .bottom) {
-                        Divider()
-                            .offset(y: 10)
-                    }
-                
                 Spacer()
             }
             .padding(.top)

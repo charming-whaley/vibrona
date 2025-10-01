@@ -114,7 +114,7 @@ struct LibraryView: View {
             }
             .sheet(isPresented: $addsNewSection) {
                 NewLibrarySectionView()
-                    .presentationDetents([.height(280)])
+                    .presentationDetents([.height(260)])
             }
         }
     }
