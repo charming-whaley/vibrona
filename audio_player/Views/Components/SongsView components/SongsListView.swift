@@ -6,6 +6,7 @@ struct SongsListView: View {
     @State private var songsSortOrder: SongSortOrder = .title
     @State private var searchQuery: String = ""
     @State private var currentSong: Song?
+    @State private var addSongs: Bool = false
     
     var processedSongsList: [Song] {
         var filteredSongsList = [Song]()
@@ -69,9 +70,10 @@ struct SongsListView: View {
                             }
                         }
                     }
+                    .contentMargins([.bottom], 15)
                 }
             }
-            .navigationTitle("Songs")
+            .navigationTitle(libraryItem.title)
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchQuery, prompt: Text("Search songs..."))
             .toolbar {
@@ -87,6 +89,17 @@ struct SongsListView: View {
                         Image(systemName: "line.3.horizontal.decrease.circle")
                     }
                 }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        addSongs.toggle()
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $addSongs) {
+                SongLibraryItemSelectionView(libraryItem: libraryItem)
             }
             .sheet(item: $currentSong, content: { song in
                 SongPlaylistSelectionView(song: song)

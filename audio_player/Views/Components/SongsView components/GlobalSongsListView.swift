@@ -68,6 +68,7 @@ struct GlobalSongsListView: View {
                             }
                         }
                     }
+                    .contentMargins([.bottom], 15)
                 }
             }
             .navigationTitle("Songs")
