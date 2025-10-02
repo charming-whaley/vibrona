@@ -39,34 +39,30 @@ struct GlobalPlaylistsListView: View {
                 if playlists.isEmpty {
                     NoPlaylistsView()
                 } else {
-                    ScrollView(.vertical) {
-                        LazyVGrid(columns: columns, spacing: 15) {
-                            ForEach(processedPlaylistsList) { playlist in
-                                NavigationLink {
-                                    PlaylistView(playlist: playlist)
+                    PlaylistsCollectionView(columns: columns, edges: [.top, .bottom], padding: 15) {
+                        ForEach(processedPlaylistsList) { playlist in
+                            NavigationLink {
+                                PlaylistView(playlist: playlist)
+                            } label: {
+                                MiniPlaylistItemView(item: playlist)
+                            }
+                            .contextMenu {
+                                Button {
+                                    currentPlaylist = playlist
+                                    renamePlaylist = true
                                 } label: {
-                                    MiniPlaylistItemView(item: playlist)
+                                    Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
                                 }
-                                .contextMenu {
-                                    Button {
-                                        currentPlaylist = playlist
-                                        renamePlaylist = true
-                                    } label: {
-                                        Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
-                                    }
-                                    
-                                    Button(role: .destructive) {
-                                        currentPlaylist = playlist
-                                        deletePlaylist = true
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
-                                    }
+                                
+                                Button(role: .destructive) {
+                                    currentPlaylist = playlist
+                                    deletePlaylist = true
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
                                 }
                             }
                         }
-                        .padding(.horizontal)
                     }
-                    .contentMargins([.top, .bottom], 15)
                 }
             }
             .navigationTitle("Playlists")

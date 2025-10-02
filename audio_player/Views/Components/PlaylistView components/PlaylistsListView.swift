@@ -14,6 +14,7 @@ struct PlaylistsListView: View {
     @State private var searchQuery: String = ""
     @State private var newPlaylistName: String = "New playlist name"
     
+    private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
     var processedSongsList: [Playlist] {
         var filteredSongsList = [Playlist]()
         if let playlists = libraryItem.playlists {
@@ -42,34 +43,30 @@ struct PlaylistsListView: View {
                 if processedSongsList.isEmpty {
                     NoPlaylistsView()
                 } else {
-                    ScrollView(.vertical) {
-                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)], spacing: 15) {
-                            ForEach(processedSongsList) { playlist in
-                                NavigationLink {
-                                    PlaylistView(playlist: playlist)
+                    PlaylistsCollectionView(columns: columns, edges: [.top, .bottom], padding: 15) {
+                        ForEach(processedSongsList) { playlist in
+                            NavigationLink {
+                                PlaylistView(playlist: playlist)
+                            } label: {
+                                MiniPlaylistItemView(item: playlist)
+                            }
+                            .contextMenu {
+                                Button {
+                                    currentPlaylist = playlist
+                                    renamePlaylist = true
                                 } label: {
-                                    MiniPlaylistItemView(item: playlist)
+                                    Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
                                 }
-                                .contextMenu {
-                                    Button {
-                                        currentPlaylist = playlist
-                                        renamePlaylist = true
-                                    } label: {
-                                        Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
-                                    }
-                                    
-                                    Button(role: .destructive) {
-                                        currentPlaylist = playlist
-                                        deletePlaylist = true
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
-                                    }
+                                
+                                Button(role: .destructive) {
+                                    currentPlaylist = playlist
+                                    deletePlaylist = true
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
                                 }
                             }
                         }
-                        .padding(.horizontal)
                     }
-                    .contentMargins([.top, .bottom], 15)
                 }
             }
             .navigationTitle(libraryItem.title)
