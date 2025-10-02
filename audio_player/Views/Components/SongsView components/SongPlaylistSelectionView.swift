@@ -27,7 +27,7 @@ struct SongPlaylistSelectionView: View {
         NavigationStack {
             Group {
                 if processedPlaylistsList.isEmpty {
-                    ContentUnavailableView("No Playlists Yet...", systemImage: "music.note.list")
+                    NoPlaylistsView()
                 } else {
                     ScrollView(.vertical) {
                         LazyVGrid(columns: columns, spacing: 15) {

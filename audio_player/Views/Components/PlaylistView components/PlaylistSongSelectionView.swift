@@ -26,7 +26,7 @@ struct PlaylistSongSelectionView: View {
         NavigationStack {
             Group {
                 if songs.isEmpty {
-                    ContentUnavailableView("No Songs Yet...", systemImage: "music.note.list")
+                    NoSongsView()
                 } else {
                     ScrollView(.vertical) {
                         LazyVStack {

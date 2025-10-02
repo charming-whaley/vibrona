@@ -58,7 +58,7 @@ struct PlaylistView: View {
                 }
                 
                 if processedSongsList.isEmpty {
-                    ContentUnavailableView("No Songs...", systemImage: "music.note.list")
+                    NoSongsView()
                         .padding(.vertical, 40)
                 } else {
                     LazyVStack {

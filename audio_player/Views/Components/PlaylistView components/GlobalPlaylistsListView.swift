@@ -13,6 +13,7 @@ struct GlobalPlaylistsListView: View {
     @State private var renamePlaylist: Bool = false
     @State private var newPlaylistName: String = "New playlist name"
     
+    private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
     var processedPlaylistsList: [Playlist] {
         var filteredPlaylistsList = [Playlist]()
         if searchQuery.isEmpty {
@@ -36,10 +37,10 @@ struct GlobalPlaylistsListView: View {
         NavigationStack {
             Group {
                 if playlists.isEmpty {
-                    ContentUnavailableView("No Playlists...", systemImage: "music.note.list")
+                    NoPlaylistsView()
                 } else {
                     ScrollView(.vertical) {
-                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)], spacing: 15) {
+                        LazyVGrid(columns: columns, spacing: 15) {
                             ForEach(processedPlaylistsList) { playlist in
                                 NavigationLink {
                                     PlaylistView(playlist: playlist)
