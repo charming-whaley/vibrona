@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct NewPlaylistView: View {
     @Environment(\.dismiss) private var dismiss
@@ -8,6 +9,10 @@ struct NewPlaylistView: View {
     let libraryItem: LibraryItem?
     @State private var title: String = "New Playlist"
     @State private var details: String = ""
+    @State private var selectedImage: UIImage?
+    @State private var photosPickerItem: PhotosPickerItem?
+    @State private var notCorrectCoverImage: Bool = false
+    @State private var coverData: Data?
     
     init(libraryItem: LibraryItem? = nil) {
         self.libraryItem = libraryItem
@@ -16,6 +21,21 @@ struct NewPlaylistView: View {
     var body: some View {
         NavigationStack {
             VStack {
+                PhotosPicker(selection: $photosPickerItem, matching: .any(of: [.images, .screenshots])) {
+                    Group {
+                        if let selectedImage = selectedImage {
+                            Image(uiImage: selectedImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 300, height: 300)
+                                .clipShape(.rect(cornerRadius: 15))
+                        } else {
+                            EmptyCoverView(of: .init(width: 300, height: 300), with: .system(size: 50))
+                        }
+                    }
+                    .padding([.top, .bottom], 30)
+                }
+                
                 Text("Title")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -30,7 +50,7 @@ struct NewPlaylistView: View {
                 
                 Spacer()
             }
-            .padding(.top)
+            .padding(.horizontal)
             .navigationTitle("Create Playlist")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -44,7 +64,12 @@ struct NewPlaylistView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        let playlist = Playlist(title: title, details: details)
+                        let playlist: Playlist
+                        if let coverData = coverData {
+                            playlist = Playlist(title: title, details: details, coverData: coverData)
+                        } else {
+                            playlist = Playlist(title: title, details: details)
+                        }
                         modelContext.insert(playlist)
                         
                         if let libraryItem = libraryItem {
@@ -67,7 +92,30 @@ struct NewPlaylistView: View {
                     }
                 }
             }
-            .padding(.horizontal)
+            .onChange(of: photosPickerItem) { _, _ in
+                Task {
+                    if let photosPickerItem = photosPickerItem, let data = try? await photosPickerItem.loadTransferable(type: Data.self) {
+                        coverData = data
+                        
+                        if let image = UIImage(data: data) {
+                            selectedImage = image
+                        } else {
+                            notCorrectCoverImage.toggle()
+                        }
+                    }
+                    
+                    photosPickerItem = nil
+                }
+            }
+            .alert("Broken image", isPresented: $notCorrectCoverImage) {
+                Button("Confirm") {
+                    selectedImage = nil
+                    photosPickerItem = nil
+                    notCorrectCoverImage.toggle()
+                }
+            } message: {
+                Text("It seems like your image is broken. Try to choose another one!")
+            }
         }
         .preferredColorScheme(.dark)
     }

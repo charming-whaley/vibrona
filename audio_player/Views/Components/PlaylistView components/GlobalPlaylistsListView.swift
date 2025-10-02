@@ -134,7 +134,6 @@ struct GlobalPlaylistsListView: View {
             }
             .sheet(isPresented: $addNewPlaylist) {
                 NewPlaylistView()
-                    .presentationDetents([.medium])
             }
         }
     }

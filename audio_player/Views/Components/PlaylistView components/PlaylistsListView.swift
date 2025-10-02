@@ -139,7 +139,6 @@ struct PlaylistsListView: View {
             }
             .sheet(isPresented: $addNewPlaylist) {
                 NewPlaylistView(libraryItem: libraryItem)
-                    .presentationDetents([.medium])
             }
         }
     }
