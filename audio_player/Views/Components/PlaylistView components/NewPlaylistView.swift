@@ -21,7 +21,7 @@ struct NewPlaylistView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                PhotosPicker(selection: $photosPickerItem, matching: .any(of: [.images, .screenshots])) {
+                PhotosPicker(selection: $photosPickerItem) {
                     Group {
                         if let selectedImage = selectedImage {
                             Image(uiImage: selectedImage)
@@ -95,9 +95,9 @@ struct NewPlaylistView: View {
             .onChange(of: photosPickerItem) { _, _ in
                 Task {
                     if let photosPickerItem = photosPickerItem, let data = try? await photosPickerItem.loadTransferable(type: Data.self) {
-                        coverData = data
                         
                         if let image = UIImage(data: data) {
+                            self.coverData = data
                             selectedImage = image
                         } else {
                             notCorrectCoverImage.toggle()

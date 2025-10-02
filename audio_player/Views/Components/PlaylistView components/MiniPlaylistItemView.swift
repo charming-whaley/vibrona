@@ -1,33 +1,28 @@
 import SwiftUI
 
 struct MiniPlaylistItemView: View {
-    @State private var widthSize: CGSize = .zero
-    var item: Playlist
+    // @State private var widthSize: CGSize = .zero
+    var playlist: Playlist
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            EmptyCoverView(
-                of: .init(width: widthSize.width, height: 160),
-                with: .largeTitle,
-                of: 12
-            )
-            
-            HStack {
-                Text(item.title)
+        GeometryReader { proxy in
+            VStack(alignment: .leading, spacing: 8) {
+                if let coverData = playlist.coverData {
+                    Image(uiImage: UIImage(data: coverData)!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: proxy.size.width, height: 160)
+                        .clipShape(.rect(cornerRadius: 12))
+                } else {
+                    EmptyCoverView(of: .init(width: proxy.size.width, height: 160), with: .largeTitle, of: 12)
+                }
+                
+                Text(playlist.title)
                     .font(.subheadline.bold())
                     .foregroundStyle(.white)
             }
         }
-        .frame(maxWidth: .infinity)
-        .background {
-            GeometryReader { proxy in
-                Color.clear
-                    .preference(key: SizePreferenceKey.self, value: proxy.size)
-            }
-        }
-        .onPreferenceChange(SizePreferenceKey.self) { size in
-            self.widthSize = size
-        }
+        .frame(height: 188)
     }
 }
 
@@ -40,6 +35,6 @@ fileprivate struct SizePreferenceKey: PreferenceKey {
 }
 
 #Preview {
-    MiniPlaylistItemView(item: Playlist(title: "Starboy"))
+    MiniPlaylistItemView(playlist: Playlist(title: "Starboy"))
         .preferredColorScheme(.dark)
 }

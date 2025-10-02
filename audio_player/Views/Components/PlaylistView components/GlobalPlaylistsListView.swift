@@ -44,7 +44,7 @@ struct GlobalPlaylistsListView: View {
                             NavigationLink {
                                 PlaylistView(playlist: playlist)
                             } label: {
-                                MiniPlaylistItemView(item: playlist)
+                                MiniPlaylistItemView(playlist: playlist)
                             }
                             .contextMenu {
                                 Button {

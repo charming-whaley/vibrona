@@ -31,7 +31,7 @@ struct SongPlaylistSelectionView: View {
                 } else {
                     PlaylistsCollectionView(columns: columns, padding: .zero) {
                         ForEach(processedPlaylistsList) { playlist in
-                            MiniPlaylistItemView(item: playlist)
+                            MiniPlaylistItemView(playlist: playlist)
                                 .overlay(alignment: .center) {
                                     if song.playlists.contains(where: { $0.id == playlist.id }) {
                                         Image(systemName: "checkmark.seal.fill")

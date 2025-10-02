@@ -37,11 +37,17 @@ struct PlaylistView: View {
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
-                EmptyCoverView(
-                    of: .init(width: 300, height: 300),
-                    with: .system(size: 50),
-                    of: 12
-                )
+                Group {
+                    if let coverData = playlist.coverData {
+                        Image(uiImage: UIImage(data: coverData)!)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 300, height: 300)
+                            .clipShape(.rect(cornerRadius: 12))
+                    } else {
+                        EmptyCoverView(of: .init(width: 300, height: 300), with: .system(size: 50), of: 12)
+                    }
+                }
                 .padding(16)
                 
                 Text(playlist.title)
