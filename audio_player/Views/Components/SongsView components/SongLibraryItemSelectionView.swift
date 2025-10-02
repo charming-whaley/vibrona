@@ -28,27 +28,25 @@ struct SongLibraryItemSelectionView: View {
                 if songs.isEmpty {
                     NoPlaylistsView()
                 } else {
-                    ScrollView(.vertical) {
-                        LazyVStack {
-                            ForEach(processedSongsList) { song in
-                                SongItemView(song: song) {
-                                    Button {
-                                        if let index = libraryItem.songs?.firstIndex(where: { $0.id == song.id }) {
-                                            libraryItem.songs?.remove(at: index)
-                                        } else {
-                                            libraryItem.songs?.append(song)
-                                        }
-                                        
-                                        do {
-                                            try modelContext.save()
-                                        } catch {
-                                            print("[Fatal error]: couldn't update the model context due to:\n\n\(error)")
-                                        }
-                                    } label: {
-                                        Image(systemName: libraryItem.songs?.contains(where: { $0.id == song.id }) ?? false ? "plus.circle.fill" : "plus.circle")
-                                            .font(.system(size: 20))
-                                            .foregroundStyle(.white)
+                    SongsCollectionView(padding: .zero) {
+                        ForEach(processedSongsList) { song in
+                            SongItemView(song: song) {
+                                Button {
+                                    if let index = libraryItem.songs?.firstIndex(where: { $0.id == song.id }) {
+                                        libraryItem.songs?.remove(at: index)
+                                    } else {
+                                        libraryItem.songs?.append(song)
                                     }
+                                    
+                                    do {
+                                        try modelContext.save()
+                                    } catch {
+                                        print("[Fatal error]: couldn't update the model context due to:\n\n\(error)")
+                                    }
+                                } label: {
+                                    Image(systemName: libraryItem.songs?.contains(where: { $0.id == song.id }) ?? false ? "plus.circle.fill" : "plus.circle")
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(.white)
                                 }
                             }
                         }

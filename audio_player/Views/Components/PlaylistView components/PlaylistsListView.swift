@@ -43,7 +43,7 @@ struct PlaylistsListView: View {
                 if processedSongsList.isEmpty {
                     NoPlaylistsView()
                 } else {
-                    PlaylistsCollectionView(columns: columns, edges: [.top, .bottom], padding: 15) {
+                    PlaylistsCollectionView(columns: columns, edges: [.top, .bottom]) {
                         ForEach(processedSongsList) { playlist in
                             NavigationLink {
                                 PlaylistView(playlist: playlist)

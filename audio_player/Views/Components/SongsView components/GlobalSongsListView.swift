@@ -38,37 +38,34 @@ struct GlobalSongsListView: View {
                 if songs.isEmpty {
                     NoSongsView()
                 } else {
-                    ScrollView(.vertical) {
-                        LazyVStack {
-                            ForEach(processedSongsList) { song in
-                                Button {
-                                    
-                                } label: {
-                                    SongItemView(song: song) {
-                                        Menu {
-                                            Button {
-                                                
-                                            } label: {
-                                                Label("Play next", systemImage: "play.fill")
-                                            }
+                    SongsCollectionView(edges: [.bottom]) {
+                        ForEach(processedSongsList) { song in
+                            Button {
+                                
+                            } label: {
+                                SongItemView(song: song) {
+                                    Menu {
+                                        Button {
                                             
-                                            Button {
-                                                currentSong = song
-                                            } label: {
-                                                Label("Add to Playlist", systemImage: "music.pages.fill")
-                                            }
                                         } label: {
-                                            Image(systemName: "ellipsis")
-                                                .font(.title2)
-                                                .foregroundStyle(.white)
-                                                .contentShape(.rect)
+                                            Label("Play next", systemImage: "play.fill")
                                         }
+                                        
+                                        Button {
+                                            currentSong = song
+                                        } label: {
+                                            Label("Add to Playlist", systemImage: "music.pages.fill")
+                                        }
+                                    } label: {
+                                        Image(systemName: "ellipsis")
+                                            .font(.title2)
+                                            .foregroundStyle(.white)
+                                            .contentShape(.rect)
                                     }
                                 }
                             }
                         }
                     }
-                    .contentMargins([.bottom], 15)
                 }
             }
             .navigationTitle("Songs")
