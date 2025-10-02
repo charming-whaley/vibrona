@@ -6,15 +6,12 @@ struct MiniPlayerView: View {
     var body: some View {
         HStack(spacing: 15) {
             HStack(spacing: 12) {
-                Rectangle()
-                    .fill(Color("AppDarkGrayColor"))
-                    .clipShape(.rect(cornerRadius: size.width / 4))
-                    .frame(width: size.width, height: size.height)
-                    .overlay(alignment: .center) {
-                        Image(systemName: "music.note")
-                            .font(.caption)
-                            .foregroundStyle(.gray)
-                    }
+                EmptyCoverView(
+                    of: size,
+                    with: .caption,
+                    of: size.width / 4,
+                    with: Color("AppDarkGrayColor")
+                )
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Trash title")
@@ -51,8 +48,5 @@ struct MiniPlayerView: View {
 }
 
 #Preview {
-    ZStack {
-        LinearGradient(colors: [.red, .blue], startPoint: .leading, endPoint: .bottomTrailing)
-        MiniPlayerView()
-    }
+    MiniPlayerView()
 }

@@ -14,15 +14,12 @@ struct SongItemView<Actions>: View where Actions: View {
     var body: some View {
         HStack(spacing: 15) {
             HStack(spacing: 12) {
-                Rectangle()
-                    .fill(.black)
-                    .clipShape(.rect(cornerRadius: size.height / 4))
-                    .frame(width: size.width, height: size.height)
-                    .overlay(alignment: .center) {
-                        Image(systemName: "music.note")
-                            .font(.callout)
-                            .foregroundStyle(.gray)
-                    }
+                EmptyCoverView(
+                    of: .init(width: size.width, height: size.height),
+                    with: .callout,
+                    of: size.height / 4,
+                    with: .black
+                )
                 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(song.title)

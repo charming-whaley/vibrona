@@ -37,16 +37,12 @@ struct PlaylistView: View {
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
-                RoundedRectangle(cornerRadius: 15)
-                    .fill(Color("AppDarkGrayColor"))
-                    .clipShape(.rect(cornerRadius: 12))
-                    .frame(width: 300, height: 300)
-                    .overlay(alignment: .center) {
-                        Image(systemName: "music.note")
-                            .font(.system(size: 50))
-                            .foregroundStyle(.gray)
-                    }
-                    .padding(16)
+                EmptyCoverView(
+                    of: .init(width: 300, height: 300),
+                    with: .system(size: 50),
+                    of: 12
+                )
+                .padding(16)
                 
                 Text(playlist.title)
                     .font(.title3.bold())

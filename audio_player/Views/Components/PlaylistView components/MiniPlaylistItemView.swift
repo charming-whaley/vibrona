@@ -1,19 +1,16 @@
 import SwiftUI
 
 struct MiniPlaylistItemView: View {
+    @State private var widthSize: CGSize = .zero
     var item: Playlist
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Rectangle()
-                .fill(Color("AppDarkGrayColor"))
-                .clipShape(.rect(cornerRadius: 12))
-                .frame(height: 160)
-                .overlay(alignment: .center) {
-                    Image(systemName: "music.note")
-                        .font(.largeTitle)
-                        .foregroundStyle(.gray)
-                }
+            EmptyCoverView(
+                of: .init(width: widthSize.width, height: 160),
+                with: .largeTitle,
+                of: 12
+            )
             
             HStack {
                 Text(item.title)
@@ -21,6 +18,24 @@ struct MiniPlaylistItemView: View {
                     .foregroundStyle(.white)
             }
         }
+        .frame(maxWidth: .infinity)
+        .background {
+            GeometryReader { proxy in
+                Color.clear
+                    .preference(key: SizePreferenceKey.self, value: proxy.size)
+            }
+        }
+        .onPreferenceChange(SizePreferenceKey.self) { size in
+            self.widthSize = size
+        }
+    }
+}
+
+fileprivate struct SizePreferenceKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+    
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
     }
 }
 
