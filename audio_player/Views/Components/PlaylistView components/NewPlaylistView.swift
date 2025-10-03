@@ -95,7 +95,6 @@ struct NewPlaylistView: View {
             .onChange(of: photosPickerItem) { _, _ in
                 Task {
                     if let photosPickerItem = photosPickerItem, let data = try? await photosPickerItem.loadTransferable(type: Data.self) {
-                        
                         if let image = UIImage(data: data) {
                             self.coverData = data
                             selectedImage = image

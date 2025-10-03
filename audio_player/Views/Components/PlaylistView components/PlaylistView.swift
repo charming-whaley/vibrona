@@ -1,11 +1,14 @@
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct PlaylistView: View {
     @Environment(\.modelContext) private var modelContext
     
     @State private var addsSongsToPlaylist: Bool = false
     @State private var songsSortOrder: SongSortOrder = .title
+    @State private var notCorrectCoverImage: Bool = false
+    @State private var photosPickerItem: PhotosPickerItem?
     @State private var searchQuery: String = ""
     
     let playlist: Playlist
@@ -37,18 +40,20 @@ struct PlaylistView: View {
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
-                Group {
-                    if let coverData = playlist.coverData {
-                        Image(uiImage: UIImage(data: coverData)!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 300, height: 300)
-                            .clipShape(.rect(cornerRadius: 12))
-                    } else {
-                        EmptyCoverView(of: .init(width: 300, height: 300), with: .system(size: 50), of: 12)
+                PhotosPicker(selection: $photosPickerItem) {
+                    Group {
+                        if let coverData = playlist.coverData {
+                            Image(uiImage: UIImage(data: coverData)!)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 300, height: 300)
+                                .clipShape(.rect(cornerRadius: 12))
+                        } else {
+                            EmptyCoverView(of: .init(width: 300, height: 300), with: .system(size: 50), of: 12)
+                        }
                     }
+                    .padding(16)
                 }
-                .padding(16)
                 
                 Text(playlist.title)
                     .font(.title3.bold())
@@ -100,6 +105,23 @@ struct PlaylistView: View {
                     .padding(.bottom, 20)
                 }
             }
+            .onChange(of: photosPickerItem) { _, _ in
+                Task {
+                    if let photosPickerItem = photosPickerItem, let data = try? await photosPickerItem.loadTransferable(type: Data.self) {
+                        if let _ = UIImage(data: data) {
+                            playlist.coverData = data
+                        } else {
+                            notCorrectCoverImage.toggle()
+                        }
+                    }
+                    
+                    do {
+                        try modelContext.save()
+                    } catch {
+                        print("[Fatal error]: couldn't save the context:\n\n\(error)")
+                    }
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
@@ -116,6 +138,14 @@ struct PlaylistView: View {
             }
             .sheet(isPresented: $addsSongsToPlaylist) {
                 PlaylistSongSelectionView(playlist: playlist)
+            }
+            .alert("Broken image", isPresented: $notCorrectCoverImage) {
+                Button("Confirm") {
+                    photosPickerItem = nil
+                    notCorrectCoverImage.toggle()
+                }
+            } message: {
+                Text("It seems like your image is broken. Try to choose another one!")
             }
         }
     }
