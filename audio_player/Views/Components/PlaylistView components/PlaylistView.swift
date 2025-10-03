@@ -10,6 +10,8 @@ struct PlaylistView: View {
     @State private var notCorrectCoverImage: Bool = false
     @State private var photosPickerItem: PhotosPickerItem?
     @State private var searchQuery: String = ""
+    @State private var topInset: CGFloat = 0
+    @State private var scrollOffsetY: CGFloat = 0
     
     let playlist: Playlist
     
@@ -53,6 +55,12 @@ struct PlaylistView: View {
                         }
                     }
                     .padding(16)
+                    .background(PlaylistBackgroundFadeView(
+                        image: playlist.cover,
+                        topInset: $topInset,
+                        scrollOffsetY: $scrollOffsetY
+                    ))
+                    .zIndex(-1)
                 }
                 
                 Text(playlist.title)
@@ -105,6 +113,12 @@ struct PlaylistView: View {
                     .padding(.bottom, 20)
                 }
             }
+            .onScrollGeometryChange(for: ScrollGeometry.self, of: {
+                $0
+            }, action: { oldValue, newValue in
+                topInset = newValue.contentInsets.top + 100
+                scrollOffsetY = newValue.contentOffset.y + newValue.contentInsets.top
+            })
             .onChange(of: photosPickerItem) { _, _ in
                 Task {
                     if let photosPickerItem = photosPickerItem, let data = try? await photosPickerItem.loadTransferable(type: Data.self) {
