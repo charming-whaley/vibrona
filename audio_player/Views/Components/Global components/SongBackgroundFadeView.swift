@@ -1,0 +1,42 @@
+import SwiftUI
+
+struct SongBackgroundFadeView: View {
+    let image: UIImage?
+    
+    var body: some View {
+        if let image = image {
+            GeometryReader { proxy in
+                ZStack {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: proxy.size.width, height: proxy.size.height)
+                        .clipped()
+                }
+                .compositingGroup()
+                .blur(radius: 30, opaque: true)
+                .overlay {
+                    Rectangle()
+                        .fill(.black.opacity(0.35))
+                }
+                .mask {
+                    Rectangle()
+                        .fill(.linearGradient(
+                            colors: [.black, .black, .black, .black, .black.opacity(0.5), .clear],
+                            startPoint: .top,
+                            endPoint: .bottom)
+                        )
+                }
+            }
+            .containerRelativeFrame(.horizontal)
+            .padding(.bottom, -60)
+            .padding(.top, -150)
+        } else {
+            EmptyView()
+        }
+    }
+}
+
+#Preview {
+    SongBackgroundFadeView(image: nil)
+}
