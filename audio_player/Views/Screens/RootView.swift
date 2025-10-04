@@ -13,8 +13,8 @@ struct RootView: View {
                 SettingsView()
             }
             
-            Tab(role: .search) {
-                
+            Tab("Search", systemImage: "magnifyingglass", role: .search) {
+                SearchView()
             }
         }
         .fullScreenCover(isPresented: $expandPlayerView) {
