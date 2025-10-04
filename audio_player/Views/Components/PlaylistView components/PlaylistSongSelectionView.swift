@@ -9,7 +9,7 @@ struct PlaylistSongSelectionView: View {
     @Bindable var playlist: Playlist
     @State private var searchQuery: String = ""
     
-    var processedSongsList: [Song] {
+    private var processedSongsList: [Song] {
         var filteredSongsList = [Song]()
         if searchQuery.isEmpty {
             filteredSongsList = songs

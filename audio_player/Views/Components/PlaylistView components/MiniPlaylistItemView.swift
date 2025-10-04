@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct MiniPlaylistItemView: View {
-    // @State private var widthSize: CGSize = .zero
     var playlist: Playlist
     
     var body: some View {
@@ -23,14 +22,6 @@ struct MiniPlaylistItemView: View {
             }
         }
         .frame(height: 188)
-    }
-}
-
-fileprivate struct SizePreferenceKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
-    
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-        value = nextValue()
     }
 }
 

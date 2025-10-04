@@ -10,7 +10,7 @@ struct SongPlaylistSelectionView: View {
     
     let song: Song
     private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
-    var processedPlaylistsList: [Playlist] {
+    private var processedPlaylistsList: [Playlist] {
         var filteredPlaylistsList = [Playlist]()
         if searchQuery.isEmpty {
             filteredPlaylistsList = playlists

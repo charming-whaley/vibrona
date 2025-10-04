@@ -8,7 +8,7 @@ struct SongsListView: View {
     @State private var currentSong: Song?
     @State private var addSongs: Bool = false
     
-    var processedSongsList: [Song] {
+    private var processedSongsList: [Song] {
         var filteredSongsList = [Song]()
         if let songs = libraryItem.songs {
             if searchQuery.isEmpty {

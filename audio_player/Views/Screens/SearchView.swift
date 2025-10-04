@@ -19,7 +19,7 @@ struct SearchView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 
-                SearchResultListView(currentCategory: $currentCategory)
+                SearchResultListView(currentCategory: $currentCategory, searchQuery: searchQuery)
             }
             .padding(.top, 8)
         }

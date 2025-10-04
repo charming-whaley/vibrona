@@ -17,7 +17,7 @@ struct PlaylistView: View {
     
     let playlist: Playlist
     
-    var processedSongsList: [Song] {
+    private var processedSongsList: [Song] {
         var filteredSongsList = [Song]()
         if searchQuery.isEmpty {
             filteredSongsList = playlist.songs

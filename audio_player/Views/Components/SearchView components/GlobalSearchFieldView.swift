@@ -12,11 +12,17 @@ struct GlobalSearchFieldView: View {
         )
         .foregroundStyle(.white)
         .padding(.vertical, 12)
-        .padding(.leading)
+        .padding(.leading, 40)
         .padding(.trailing, 48)
         .background {
             RoundedRectangle(cornerRadius: 15.3)
                 .fill(Color("AppDarkGrayColor"))
+        }
+        .overlay(alignment: .leading) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.gray)
+                .padding(.trailing)
+                .padding(.horizontal, 12)
         }
         .overlay(alignment: .trailing) {
             if !searchQuery.isEmpty {

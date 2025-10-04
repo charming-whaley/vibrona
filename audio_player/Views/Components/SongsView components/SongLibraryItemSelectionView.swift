@@ -9,7 +9,7 @@ struct SongLibraryItemSelectionView: View {
     @State private var searchQuery: String = ""
     
     var libraryItem: LibraryItem
-    var processedSongsList: [Song] {
+    private var processedSongsList: [Song] {
         var filteredSongsList = [Song]()
         if searchQuery.isEmpty {
             filteredSongsList = songs

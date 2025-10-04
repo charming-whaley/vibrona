@@ -7,7 +7,34 @@ struct SearchResultListView: View {
     
     @State private var selectedSong: Song?
     @Binding var currentCategory: SearchCategoryType
+    var searchQuery: String
     private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
+    
+    private var processedPlaylistsList: [Playlist] {
+        var filteredPlaylistsList = [Playlist]()
+        if searchQuery.isEmpty {
+            filteredPlaylistsList = playlists
+        } else {
+            filteredPlaylistsList = playlists.filter { playlist in
+                playlist.title.localizedStandardContains(searchQuery) || searchQuery.isEmpty
+            }
+        }
+        
+        return filteredPlaylistsList
+    }
+    
+    private var processedSongsList: [Song] {
+        var filteredSongsList = [Song]()
+        if searchQuery.isEmpty {
+            filteredSongsList = songs
+        } else {
+            filteredSongsList = songs.filter { song in
+                song.title.localizedStandardContains(searchQuery) || song.artist.localizedStandardContains(searchQuery) || searchQuery.isEmpty
+            }
+        }
+        
+        return filteredSongsList
+    }
     
     var body: some View {
         NavigationStack {
@@ -15,7 +42,7 @@ struct SearchResultListView: View {
                 switch currentCategory {
                 case .songs:
                     SongsCollectionView {
-                        ForEach(songs) { song in
+                        ForEach(processedSongsList) { song in
                             Button {
                                 
                             } label: {
@@ -44,7 +71,7 @@ struct SearchResultListView: View {
                     }
                 case .playlists:
                     PlaylistsCollectionView(columns: columns) {
-                        ForEach(playlists) { playlist in
+                        ForEach(processedPlaylistsList) { playlist in
                             NavigationLink {
                                 PlaylistView(playlist: playlist)
                             } label: {
@@ -66,7 +93,7 @@ struct SearchResultListView: View {
     preview.insert(Playlist.playlists)
     preview.insert(Song.songs)
     
-    return SearchResultListView(currentCategory: .constant(.songs))
+    return SearchResultListView(currentCategory: .constant(.songs), searchQuery: "")
         .preferredColorScheme(.dark)
         .modelContainer(preview.container)
 }

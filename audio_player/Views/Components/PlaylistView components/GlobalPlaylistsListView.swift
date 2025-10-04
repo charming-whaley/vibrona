@@ -14,7 +14,7 @@ struct GlobalPlaylistsListView: View {
     @State private var newPlaylistName: String = "New playlist name"
     
     private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
-    var processedPlaylistsList: [Playlist] {
+    private var processedPlaylistsList: [Playlist] {
         var filteredPlaylistsList = [Playlist]()
         if searchQuery.isEmpty {
             filteredPlaylistsList = playlists

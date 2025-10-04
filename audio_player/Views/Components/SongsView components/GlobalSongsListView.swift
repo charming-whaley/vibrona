@@ -8,7 +8,7 @@ struct GlobalSongsListView: View {
     @State private var searchQuery: String = ""
     @State private var currentSong: Song?
     
-    var processedSongsList: [Song] {
+    private var processedSongsList: [Song] {
         var filteredSongsList = [Song]()
         if searchQuery.isEmpty {
             filteredSongsList = songs
