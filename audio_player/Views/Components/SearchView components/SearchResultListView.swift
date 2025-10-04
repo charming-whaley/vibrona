@@ -7,22 +7,12 @@ struct SearchResultListView: View {
     
     @State private var selectedSong: Song?
     @Binding var currentCategory: SearchCategoryType
+    
     var searchQuery: String
     private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
-    
     private var processedPlaylistsList: [Playlist] {
-        var filteredPlaylistsList = [Playlist]()
-        if searchQuery.isEmpty {
-            filteredPlaylistsList = playlists
-        } else {
-            filteredPlaylistsList = playlists.filter { playlist in
-                playlist.title.localizedStandardContains(searchQuery) || searchQuery.isEmpty
-            }
-        }
-        
-        return filteredPlaylistsList
+        return DataController.shared.retrieveProcessedPlaylistsList(of: playlists, by: searchQuery)
     }
-    
     private var processedSongsList: [Song] {
         return DataController.shared.retrieveProcessedSongsList(of: songs, by: searchQuery)
     }

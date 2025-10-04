@@ -15,36 +15,25 @@ struct PlaylistsListView: View {
     @State private var newPlaylistName: String = "New playlist name"
     
     private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
-    private var processedSongsList: [Playlist] {
-        var filteredSongsList = [Playlist]()
-        if let playlists = libraryItem.playlists {
-            if searchQuery.isEmpty {
-                filteredSongsList = playlists
-            } else {
-                filteredSongsList = playlists.filter { song in
-                    song.title.localizedStandardContains(searchQuery) || searchQuery.isEmpty
-                }
+    private var processedPlaylistsList: [Playlist] {
+        return DataController.shared.retrieveProcessedPlaylistsList(of: libraryItem.playlists, by: searchQuery) {
+            switch playlistsSortOrder {
+            case .title:
+                $0.title < $1.title
+            case .dateAdded:
+                $0.dateAdded < $1.dateAdded
             }
         }
-        
-        let sortedPlaylistsList = switch playlistsSortOrder {
-        case .title:
-            filteredSongsList.sorted { $0.title < $1.title }
-        case .dateAdded:
-            filteredSongsList.sorted { $0.dateAdded < $1.dateAdded }
-        }
-        
-        return sortedPlaylistsList
     }
     
     var body: some View {
         NavigationStack {
             Group {
-                if processedSongsList.isEmpty {
+                if processedPlaylistsList.isEmpty {
                     NoPlaylistsView()
                 } else {
                     PlaylistsCollectionView(columns: columns, edges: [.top, .bottom]) {
-                        ForEach(processedSongsList) { playlist in
+                        ForEach(processedPlaylistsList) { playlist in
                             NavigationLink {
                                 PlaylistView(playlist: playlist)
                             } label: {

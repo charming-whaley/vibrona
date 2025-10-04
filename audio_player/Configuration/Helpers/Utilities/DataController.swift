@@ -20,4 +20,20 @@ final class DataController {
         
         return filteredSongsList.sorted(by: sort)
     }
+    
+    public func retrieveProcessedPlaylistsList(of playlists: [Playlist]?, by searchQuery: String, _ sort: ((Playlist, Playlist) -> Bool)? = nil) -> [Playlist] {
+        guard let playlists = playlists else {
+            return []
+        }
+        
+        let filteredPlaylistsList = playlists.filter { playlist in
+            return searchQuery.isEmpty || playlist.title.localizedStandardContains(searchQuery)
+        }
+        
+        guard let sort = sort else {
+            return filteredPlaylistsList
+        }
+        
+        return filteredPlaylistsList.sorted(by: sort)
+    }
 }

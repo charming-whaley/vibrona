@@ -11,16 +11,7 @@ struct SongPlaylistSelectionView: View {
     let song: Song
     private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
     private var processedPlaylistsList: [Playlist] {
-        var filteredPlaylistsList = [Playlist]()
-        if searchQuery.isEmpty {
-            filteredPlaylistsList = playlists
-        } else {
-            filteredPlaylistsList = playlists.filter { playlist in
-                playlist.title.localizedStandardContains(searchQuery) || searchQuery.isEmpty
-            }
-        }
-        
-        return filteredPlaylistsList
+        return DataController.shared.retrieveProcessedPlaylistsList(of: playlists, by: searchQuery)
     }
     
     var body: some View {

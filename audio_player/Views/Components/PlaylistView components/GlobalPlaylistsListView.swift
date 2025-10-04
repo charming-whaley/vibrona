@@ -15,22 +15,14 @@ struct GlobalPlaylistsListView: View {
     
     private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
     private var processedPlaylistsList: [Playlist] {
-        var filteredPlaylistsList = [Playlist]()
-        if searchQuery.isEmpty {
-            filteredPlaylistsList = playlists
-        } else {
-            filteredPlaylistsList = playlists.filter { playlist in
-                playlist.title.localizedStandardContains(searchQuery) || searchQuery.isEmpty
+        return DataController.shared.retrieveProcessedPlaylistsList(of: playlists, by: searchQuery) {
+            switch playlistsSortOrder {
+            case .title:
+                $0.title < $1.title
+            case .dateAdded:
+                $0.dateAdded < $1.dateAdded
             }
         }
-        
-        let sortedPlaylistsList = switch playlistsSortOrder {
-        case .title:
-            filteredPlaylistsList.sorted { $0.title < $1.title }
-        case .dateAdded:
-            filteredPlaylistsList.sorted { $0.dateAdded < $1.dateAdded }
-        }
-        return sortedPlaylistsList
     }
     
     var body: some View {
