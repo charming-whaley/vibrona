@@ -9,9 +9,11 @@ struct PlaylistView: View {
     @State private var songsSortOrder: SongSortOrder = .title
     @State private var notCorrectCoverImage: Bool = false
     @State private var photosPickerItem: PhotosPickerItem?
+    @State private var renamePlaylist: Bool = false
     @State private var searchQuery: String = ""
     @State private var topInset: CGFloat = 0
     @State private var scrollOffsetY: CGFloat = 0
+    @State private var newPlaylistTitle: String = "New playlist name"
     
     let playlist: Playlist
     
@@ -66,6 +68,10 @@ struct PlaylistView: View {
                 Text(playlist.title)
                     .font(.title3.bold())
                     .padding(.bottom, 12)
+                    .contentShape(.rect)
+                    .onTapGesture {
+                        renamePlaylist.toggle()
+                    }
                 
                 Divider()
                     .padding(.horizontal)
@@ -97,7 +103,13 @@ struct PlaylistView: View {
                                     }
                                     
                                     Button(role: .destructive) {
+                                        playlist.songs.removeAll(where: { $0.id == song.id })
                                         
+                                        do {
+                                            try modelContext.save()
+                                        } catch {
+                                            print("[Fatal error]: couldn't resolve the operation:\n\n\(error)")
+                                        }
                                     } label: {
                                         Label("Delete", systemImage: "trash.fill")
                                     }
@@ -160,6 +172,25 @@ struct PlaylistView: View {
                 }
             } message: {
                 Text("It seems like your image is broken. Try to choose another one!")
+            }
+            .alert("Rename playlist", isPresented: $renamePlaylist) {
+                TextField("Enter a new name...", text: $newPlaylistTitle)
+                
+                HStack {
+                    Button("Cancel") {
+                        renamePlaylist.toggle()
+                        newPlaylistTitle = "New playlist name"
+                    }
+                    
+                    Button("Rename") {
+                        playlist.title = newPlaylistTitle
+                        do {
+                            try modelContext.save()
+                        } catch {
+                            print("[Fatal error]: couldn't resolve the operation:\n\n\(error)")
+                        }
+                    }
+                }
             }
         }
     }
