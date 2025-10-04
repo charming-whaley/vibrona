@@ -10,16 +10,7 @@ struct PlaylistSongSelectionView: View {
     @State private var searchQuery: String = ""
     
     private var processedSongsList: [Song] {
-        var filteredSongsList = [Song]()
-        if searchQuery.isEmpty {
-            filteredSongsList = songs
-        } else {
-            filteredSongsList = songs.filter { song in
-                song.title.localizedStandardContains(searchQuery) || song.artist.localizedStandardContains(searchQuery) || searchQuery.isEmpty
-            }
-        }
-        
-        return filteredSongsList
+        return DataController.shared.retrieveProcessedSongsList(of: songs, by: searchQuery)
     }
     
     var body: some View {

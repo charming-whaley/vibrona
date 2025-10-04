@@ -16,29 +16,19 @@ struct PlaylistView: View {
     @State private var newPlaylistTitle: String = "New playlist name"
     
     let playlist: Playlist
-    
     private var processedSongsList: [Song] {
-        var filteredSongsList = [Song]()
-        if searchQuery.isEmpty {
-            filteredSongsList = playlist.songs
-        } else {
-            filteredSongsList = playlist.songs.filter { song in
-                song.title.localizedStandardContains(searchQuery) || song.artist.localizedStandardContains(searchQuery) || searchQuery.isEmpty
+        return DataController.shared.retrieveProcessedSongsList(of: playlist.songs, by: searchQuery) {
+            switch songsSortOrder {
+            case .title:
+                $0.title < $1.title
+            case .artist:
+                $0.artist < $1.artist
+            case .dateAdded:
+                $0.dateAdded < $1.dateAdded
+            case .playCount:
+                $0.playCount < $1.playCount
             }
         }
-        
-        let sortedSongsList = switch songsSortOrder {
-        case .title:
-            filteredSongsList.sorted { $0.title < $1.title }
-        case .artist:
-            filteredSongsList.sorted { $0.artist < $1.artist }
-        case .dateAdded:
-            filteredSongsList.sorted { $0.dateAdded < $1.dateAdded }
-        case .playCount:
-            filteredSongsList.sorted { $0.playCount < $1.playCount }
-        }
-        
-        return sortedSongsList
     }
     
     var body: some View {

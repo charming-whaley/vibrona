@@ -5,19 +5,19 @@ final class DataController {
     
     static let shared = DataController()
     
-    public func retrieveFilteredSongsList() {
+    public func retrieveProcessedSongsList(of songs: [Song]?, by searchQuery: String, _ sort: ((Song, Song) -> Bool)? = nil) -> [Song] {
+        guard let songs = songs else {
+            return []
+        }
         
-    }
-    
-    public func retrieveFilteredAndSortedSongsList() {
+        let filteredSongsList = songs.filter { song in
+            return searchQuery.isEmpty || song.title.localizedStandardContains(searchQuery) || song.artist.localizedStandardContains(searchQuery)
+        }
         
-    }
-    
-    public func retrieveFilteredPlaylistsList() {
+        guard let sort = sort else {
+            return filteredSongsList
+        }
         
-    }
-    
-    public func retrieveFilteredAndSortedPlaylistsList() {
-        
+        return filteredSongsList.sorted(by: sort)
     }
 }

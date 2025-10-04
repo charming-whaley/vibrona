@@ -6,13 +6,14 @@ struct NewPlaylistView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     
-    let libraryItem: LibraryItem?
     @State private var title: String = "New Playlist"
     @State private var details: String = ""
     @State private var selectedImage: UIImage?
     @State private var photosPickerItem: PhotosPickerItem?
     @State private var notCorrectCoverImage: Bool = false
     @State private var coverData: Data?
+    
+    let libraryItem: LibraryItem?
     
     init(libraryItem: LibraryItem? = nil) {
         self.libraryItem = libraryItem
