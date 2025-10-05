@@ -6,22 +6,26 @@ final class Song {
     @Attribute(.unique) var id: UUID
     var title: String
     var artist: String
-    var duration: TimeInterval?
+    var duration: Double?
     var filePath: String
     var dateAdded: Date
     var playCount: Int
     var lastPlayed: Date?
+    var fileName: String?
+    var coverData: Data?
     
     @Relationship(deleteRule: .nullify, inverse: \Playlist.songs) var playlists: [Playlist] = []
     
     init(
         title: String,
         artist: String,
-        duration: TimeInterval? = nil,
+        duration: Double? = nil,
         filePath: String,
         dateAdded: Date = .now,
         playCount: Int = 0,
-        lastPlayed: Date? = nil
+        lastPlayed: Date? = nil,
+        fileName: String? = nil,
+        coverData: Data? = nil
     ) {
         self.id = UUID()
         self.title = title
@@ -31,5 +35,15 @@ final class Song {
         self.dateAdded = dateAdded
         self.playCount = playCount
         self.lastPlayed = lastPlayed
+        self.fileName = fileName
+        self.coverData = coverData
+    }
+    
+    var cover: UIImage? {
+        if let data = coverData {
+            return UIImage(data: data)
+        } else {
+            return nil
+        }
     }
 }

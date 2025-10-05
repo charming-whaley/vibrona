@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import AVFoundation
 
 final class DataController {
     
@@ -35,5 +36,38 @@ final class DataController {
         }
         
         return filteredPlaylistsList.sorted(by: sort)
+    }
+    
+    public func extractMetaData(from url: URL) async -> MP3Metadata {
+        let asset = AVURLAsset(url: url)
+        
+        let duration = try? await asset.load(.duration).seconds
+        var title: String?
+        var artist: String?
+        var coverData: Data?
+        
+        if let metadata = try? await asset.load(.commonMetadata) {
+            for meta in metadata {
+                switch meta.commonKey {
+                case .commonKeyTitle:
+                    title = try? await meta.load(.stringValue)
+                case .commonKeyArtist:
+                    artist = try? await meta.load(.stringValue)
+                case .commonKeyArtwork:
+                    if let data = try? await meta.load(.dataValue) {
+                        coverData = data
+                    }
+                default:
+                    break
+                }
+            }
+        }
+        
+        return MP3Metadata(
+            title: title,
+            artist: artist,
+            cover: coverData,
+            duration: duration
+        )
     }
 }
