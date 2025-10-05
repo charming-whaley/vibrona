@@ -60,45 +60,16 @@ struct GlobalPlaylistsListView: View {
                 }
             }
             .alert("Delete playlist?", isPresented: $deletePlaylist) {
-                Button {
-                    currentPlaylist = nil
-                    deletePlaylist = false
-                } label: {
-                    Text("Cancel")
-                }
-                
-                Button {
-                    if let playlist = currentPlaylist {
-                        modelContext.delete(playlist)
-                    }
-                    
-                    currentPlaylist = nil
-                    deletePlaylist = false
-                } label: {
-                    Text("Delete")
-                }
+                Button("Cancel", action: resetDeleteAction)
+                Button("Delete", action: removePlaylist)
             } message: {
                 Text("Do you actually want to delete this playlist? No songs will be affected by this action")
             }
             .alert("Rename playlist", isPresented: $renamePlaylist) {
                 TextField("Give new name", text: $newPlaylistName)
-                
-                Button("Cancel") {
-                    currentPlaylist = nil
-                    renamePlaylist = false
-                }
-                
+                Button("Cancel", action: resetRenameAction)
                 Button("Rename") {
-                    currentPlaylist?.title = newPlaylistName
-                    
-                    do {
-                        try modelContext.save()
-                    } catch {
-                        print("[Fatal error]: couldn't rename the playlist:\n\n\(error)")
-                    }
-                    
-                    currentPlaylist = nil
-                    renamePlaylist = false
+                    renamePlaylist(to: newPlaylistName)
                 }
             }
             .sheet(isPresented: $addNewPlaylist) {
@@ -132,6 +103,36 @@ struct GlobalPlaylistsListView: View {
                 }
             }
         }
+    }
+    
+    private func renamePlaylist(to: String) {
+        currentPlaylist?.title = newPlaylistName
+        
+        do {
+            try modelContext.save()
+        } catch {
+            print("[Fatal error]: couldn't rename the playlist:\n\n\(error)")
+        }
+        
+        resetRenameAction()
+    }
+    
+    private func resetRenameAction() {
+        currentPlaylist = nil
+        renamePlaylist = false
+    }
+    
+    private func removePlaylist() {
+        if let playlist = currentPlaylist {
+            modelContext.delete(playlist)
+        }
+        
+        resetDeleteAction()
+    }
+    
+    private func resetDeleteAction() {
+        currentPlaylist = nil
+        deletePlaylist = false
     }
 }
 

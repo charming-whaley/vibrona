@@ -3,16 +3,16 @@ import SwiftData
 
 struct PlaylistsListView: View {
     @Environment(\.modelContext) private var modelContext
-    @Bindable var libraryItem: LibraryItem
     @Query var playlists: [Playlist]
     
-    @State private var playlistsSortOrder: PlaylistSortOrder = .title
+    @Bindable var libraryItem: LibraryItem
+    @State private var searchQuery: String = ""
+    @State private var newPlaylistName: String = "New playlist name"
     @State private var currentPlaylist: Playlist?
+    @State private var playlistsSortOrder: PlaylistSortOrder = .title
     @State private var addNewPlaylist: Bool = false
     @State private var deletePlaylist: Bool = false
     @State private var renamePlaylist: Bool = false
-    @State private var searchQuery: String = ""
-    @State private var newPlaylistName: String = "New playlist name"
     
     private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
     private var processedPlaylistsList: [Playlist] {
@@ -32,30 +32,7 @@ struct PlaylistsListView: View {
                 if processedPlaylistsList.isEmpty {
                     NoPlaylistsView()
                 } else {
-                    PlaylistsCollectionView(columns: columns, edges: [.top, .bottom]) {
-                        ForEach(processedPlaylistsList) { playlist in
-                            NavigationLink {
-                                PlaylistView(playlist: playlist)
-                            } label: {
-                                MiniPlaylistItemView(playlist: playlist)
-                            }
-                            .contextMenu {
-                                Button {
-                                    currentPlaylist = playlist
-                                    renamePlaylist = true
-                                } label: {
-                                    Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
-                                }
-                                
-                                Button(role: .destructive) {
-                                    currentPlaylist = playlist
-                                    deletePlaylist = true
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
-                        }
-                    }
+                    PlaylistsListContentView()
                 }
             }
             .navigationTitle(libraryItem.title)
@@ -84,51 +61,77 @@ struct PlaylistsListView: View {
                 }
             }
             .alert("Delete playlist?", isPresented: $deletePlaylist) {
-                Button {
-                    currentPlaylist = nil
-                    deletePlaylist = false
-                } label: {
-                    Text("Cancel")
-                }
-                
-                Button {
-                    if let playlist = currentPlaylist {
-                        libraryItem.playlists?.removeAll { $0 == playlist }
-                        modelContext.delete(playlist)
-                    }
-                    
-                    currentPlaylist = nil
-                    deletePlaylist = false
-                } label: {
-                    Text("Delete")
-                }
+                Button("Cancel", action: resetDeleteAction)
+                Button("Delete", action: removePlaylist)
             } message: {
                 Text("Do you actually want to delete this playlist? No songs will be affected by this action")
             }
             .alert("Rename playlist", isPresented: $renamePlaylist) {
                 TextField("Give new name", text: $newPlaylistName)
-                
-                Button("Cancel") {
-                    currentPlaylist = nil
-                    renamePlaylist = false
-                }
-                
-                Button("Rename") {
-                    currentPlaylist?.title = newPlaylistName
-                    
-                    do {
-                        try modelContext.save()
-                    } catch {
-                        print("[Fatal error]: couldn't rename the playlist:\n\n\(error)")
-                    }
-                    
-                    currentPlaylist = nil
-                    renamePlaylist = false
-                }
+                Button("Cancel", action: resetRenameAction)
+                Button("Rename", action: renamePlaylistAction)
             }
             .sheet(isPresented: $addNewPlaylist) {
                 NewPlaylistView(libraryItem: libraryItem)
             }
         }
+    }
+    
+    @ViewBuilder private func PlaylistsListContentView() -> some View {
+        PlaylistsCollectionView(columns: columns, edges: [.top, .bottom]) {
+            ForEach(processedPlaylistsList) { playlist in
+                NavigationLink {
+                    PlaylistView(playlist: playlist)
+                } label: {
+                    MiniPlaylistItemView(playlist: playlist)
+                }
+                .contextMenu {
+                    Button {
+                        currentPlaylist = playlist
+                        renamePlaylist = true
+                    } label: {
+                        Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
+                    }
+                    
+                    Button(role: .destructive) {
+                        currentPlaylist = playlist
+                        deletePlaylist = true
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+            }
+        }
+    }
+    
+    private func renamePlaylistAction() {
+        currentPlaylist?.title = newPlaylistName
+        
+        do {
+            try modelContext.save()
+        } catch {
+            print("[Fatal error]: couldn't rename the playlist:\n\n\(error)")
+        }
+        
+        resetRenameAction()
+    }
+    
+    private func resetRenameAction() {
+        currentPlaylist = nil
+        renamePlaylist = false
+    }
+    
+    private func removePlaylist() {
+        if let playlist = currentPlaylist {
+            libraryItem.playlists?.removeAll { $0 == playlist }
+            modelContext.delete(playlist)
+        }
+        
+        resetDeleteAction()
+    }
+    
+    private func resetDeleteAction() {
+        currentPlaylist = nil
+        deletePlaylist = false
     }
 }

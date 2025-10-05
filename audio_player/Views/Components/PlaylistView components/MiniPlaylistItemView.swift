@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MiniPlaylistItemView: View {
-    var playlist: Playlist
+    let playlist: Playlist
     
     var body: some View {
         GeometryReader { proxy in

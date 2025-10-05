@@ -8,10 +8,10 @@ struct NewPlaylistView: View {
     
     @State private var title: String = "New Playlist"
     @State private var details: String = ""
+    @State private var coverData: Data?
     @State private var selectedImage: UIImage?
     @State private var photosPickerItem: PhotosPickerItem?
     @State private var notCorrectCoverImage: Bool = false
-    @State private var coverData: Data?
     
     let libraryItem: LibraryItem?
     
@@ -22,33 +22,8 @@ struct NewPlaylistView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                PhotosPicker(selection: $photosPickerItem) {
-                    Group {
-                        if let selectedImage = selectedImage {
-                            Image(uiImage: selectedImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 300, height: 300)
-                                .clipShape(.rect(cornerRadius: 15))
-                        } else {
-                            EmptyCoverView(of: .init(width: 300, height: 300), with: .system(size: 50))
-                        }
-                    }
-                    .padding([.top, .bottom], 30)
-                }
-                
-                Text("Title")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                TextField("Playlist name...", text: $title)
-                    .overlay(alignment: .bottom) {
-                        Divider()
-                            .offset(y: 10)
-                    }
-                    .padding(.bottom, 20)
-                
+                NewPlaylistCoverFrameView()
+                NewPlaylistTitleSectionView()
                 Spacer()
             }
             .padding(.horizontal)
@@ -108,16 +83,48 @@ struct NewPlaylistView: View {
                 }
             }
             .alert("Broken image", isPresented: $notCorrectCoverImage) {
-                Button("Confirm") {
-                    selectedImage = nil
-                    photosPickerItem = nil
-                    notCorrectCoverImage.toggle()
-                }
+                Button("Confirm", action: resetImageSelection)
             } message: {
                 Text("It seems like your image is broken. Try to choose another one!")
             }
         }
-        .preferredColorScheme(.dark)
+    }
+    
+    @ViewBuilder private func NewPlaylistCoverFrameView() -> some View {
+        PhotosPicker(selection: $photosPickerItem) {
+            Group {
+                if let selectedImage = selectedImage {
+                    Image(uiImage: selectedImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 300, height: 300)
+                        .clipShape(.rect(cornerRadius: 15))
+                } else {
+                    EmptyCoverView(of: .init(width: 300, height: 300), with: .system(size: 50))
+                }
+            }
+            .padding([.top, .bottom], 30)
+        }
+    }
+    
+    @ViewBuilder private func NewPlaylistTitleSectionView() -> some View {
+        Text("Title")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        
+        TextField("Playlist name...", text: $title)
+            .overlay(alignment: .bottom) {
+                Divider()
+                    .offset(y: 10)
+            }
+            .padding(.bottom, 20)
+    }
+    
+    private func resetImageSelection() {
+        selectedImage = nil
+        photosPickerItem = nil
+        notCorrectCoverImage.toggle()
     }
 }
 
