@@ -5,13 +5,13 @@ struct GlobalPlaylistsListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query var playlists: [Playlist]
     
-    @State private var playlistsSortOrder: PlaylistSortOrder = .title
     @State private var searchQuery: String = ""
+    @State private var newPlaylistName: String = "New playlist name"
     @State private var currentPlaylist: Playlist?
+    @State private var playlistsSortOrder: PlaylistSortOrder = .title
     @State private var addNewPlaylist: Bool = false
     @State private var deletePlaylist: Bool = false
     @State private var renamePlaylist: Bool = false
-    @State private var newPlaylistName: String = "New playlist name"
     
     private let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
     private var processedPlaylistsList: [Playlist] {
@@ -31,30 +31,7 @@ struct GlobalPlaylistsListView: View {
                 if playlists.isEmpty {
                     NoPlaylistsView()
                 } else {
-                    PlaylistsCollectionView(columns: columns, edges: [.top, .bottom]) {
-                        ForEach(processedPlaylistsList) { playlist in
-                            NavigationLink {
-                                PlaylistView(playlist: playlist)
-                            } label: {
-                                MiniPlaylistItemView(playlist: playlist)
-                            }
-                            .contextMenu {
-                                Button {
-                                    currentPlaylist = playlist
-                                    renamePlaylist = true
-                                } label: {
-                                    Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
-                                }
-                                
-                                Button(role: .destructive) {
-                                    currentPlaylist = playlist
-                                    deletePlaylist = true
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
-                        }
-                    }
+                    GlobalPlaylistsListContentView()
                 }
             }
             .navigationTitle("Playlists")
@@ -126,6 +103,33 @@ struct GlobalPlaylistsListView: View {
             }
             .sheet(isPresented: $addNewPlaylist) {
                 NewPlaylistView()
+            }
+        }
+    }
+    
+    @ViewBuilder private func GlobalPlaylistsListContentView() -> some View {
+        PlaylistsCollectionView(columns: columns, edges: [.top, .bottom]) {
+            ForEach(processedPlaylistsList) { playlist in
+                NavigationLink {
+                    PlaylistView(playlist: playlist)
+                } label: {
+                    MiniPlaylistItemView(playlist: playlist)
+                }
+                .contextMenu {
+                    Button {
+                        currentPlaylist = playlist
+                        renamePlaylist = true
+                    } label: {
+                        Label("Rename...", systemImage: "rectangle.and.pencil.and.ellipsis")
+                    }
+                    
+                    Button(role: .destructive) {
+                        currentPlaylist = playlist
+                        deletePlaylist = true
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
             }
         }
     }

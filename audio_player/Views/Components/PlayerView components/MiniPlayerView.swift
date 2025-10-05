@@ -5,45 +5,46 @@ struct MiniPlayerView: View {
     
     var body: some View {
         HStack(spacing: 15) {
-            HStack(spacing: 12) {
-                EmptyCoverView(
-                    of: size,
-                    with: .caption,
-                    of: size.width / 4,
-                    with: Color("AppDarkGrayColor")
-                )
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Trash title")
-                        .font(.callout)
-                    
-                    Text("Trash artist")
-                        .font(.caption2)
-                        .foregroundStyle(.gray)
-                }
-            }
-            
+            MiniPlayerLHSView()
             Spacer()
-            
-            Button {
-                
-            } label: {
-                Image(systemName: "play.fill")
-                    .contentShape(.rect)
-                    .foregroundStyle(.foreground)
-            }
-            .padding(.trailing, 10)
-            
-            Button {
-                
-            } label: {
-                Image(systemName: "forward.fill")
-                    .contentShape(.rect)
-                    .foregroundStyle(.foreground)
-            }
+            MiniPlayerRHSView()
         }
         .padding(.horizontal)
         .contentShape(.rect)
+    }
+    
+    @ViewBuilder private func MiniPlayerLHSView() -> some View {
+        HStack(spacing: 12) {
+            EmptyCoverView(of: size, with: .caption, of: size.width / 4, with: Color("AppDarkGrayColor"))
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Trash title")
+                    .font(.callout)
+                
+                Text("Trash artist")
+                    .font(.caption2)
+                    .foregroundStyle(.gray)
+            }
+        }
+    }
+    
+    @ViewBuilder private func MiniPlayerRHSView() -> some View {
+        Button {
+            
+        } label: {
+            Image(systemName: "play.fill")
+                .contentShape(.rect)
+                .foregroundStyle(.foreground)
+        }
+        .padding(.trailing, 10)
+        
+        Button {
+            
+        } label: {
+            Image(systemName: "forward.fill")
+                .contentShape(.rect)
+                .foregroundStyle(.foreground)
+        }
     }
 }
 

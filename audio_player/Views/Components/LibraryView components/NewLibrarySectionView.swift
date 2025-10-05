@@ -14,47 +14,8 @@ struct NewLibrarySectionView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 12) {
-                Text("Title")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                TextField("Section title...", text: $title)
-                    .overlay(alignment: .bottom) {
-                        Divider()
-                            .offset(y: 10)
-                    }
-                    .padding(.bottom, 20)
-                
-                Text("Cover & type")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                HStack {
-                    HStack {
-                        ForEach(covers, id: \.self) { cover in
-                            Image(systemName: cover)
-                                .font(.title)
-                                .frame(maxWidth: .infinity)
-                                .foregroundStyle(systemImage == cover ? .blue : .white)
-                                .contentShape(.rect)
-                                .onTapGesture {
-                                    systemImage = cover
-                                }
-                        }
-                    }
-                    
-                    Spacer(minLength: 30)
-                    
-                    Picker("", selection: $libraryItemType) {
-                        ForEach(LibraryItemType.allCases) { type in
-                            Text("\(type.description)")
-                        }
-                    }
-                    .buttonStyle(.bordered)
-                }
-                
+                NewLibrarySectionHeaderView()
+                NewLibrarySectionFooterView()
                 Spacer()
             }
             .padding(.top)
@@ -81,6 +42,51 @@ struct NewLibrarySectionView: View {
                 }
             }
             .padding(.horizontal)
+        }
+    }
+    
+    @ViewBuilder private func NewLibrarySectionHeaderView() -> some View {
+        Text("Title")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        
+        TextField("Section title...", text: $title)
+            .overlay(alignment: .bottom) {
+                Divider()
+                    .offset(y: 10)
+            }
+            .padding(.bottom, 20)
+    }
+    
+    @ViewBuilder private func NewLibrarySectionFooterView() -> some View {
+        Text("Cover & type")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        
+        HStack {
+            HStack {
+                ForEach(covers, id: \.self) { cover in
+                    Image(systemName: cover)
+                        .font(.title)
+                        .frame(maxWidth: .infinity)
+                        .foregroundStyle(systemImage == cover ? .blue : .white)
+                        .contentShape(.rect)
+                        .onTapGesture {
+                            systemImage = cover
+                        }
+                }
+            }
+            
+            Spacer(minLength: 30)
+            
+            Picker("", selection: $libraryItemType) {
+                ForEach(LibraryItemType.allCases) { type in
+                    Text("\(type.description)")
+                }
+            }
+            .buttonStyle(.bordered)
         }
     }
 }
