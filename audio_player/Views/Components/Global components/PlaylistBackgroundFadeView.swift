@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PlaylistBackgroundFadeView: View {
     let image: UIImage?
+    
     @Binding var topInset: CGFloat
     @Binding var scrollOffsetY: CGFloat
     

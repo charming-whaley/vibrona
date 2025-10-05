@@ -30,5 +30,6 @@ struct GlobalSearchFieldView: View {
                     }
                 }
             }
+            .padding(.horizontal)
     }
 }

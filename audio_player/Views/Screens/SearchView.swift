@@ -9,20 +9,21 @@ struct SearchView: View {
         NavigationStack {
             VStack(spacing: 12) {
                 GlobalSearchFieldView(searchQuery: $searchQuery)
-                    .padding(.horizontal)
-                
-                Picker("", selection: $currentCategory) {
-                    ForEach(SearchCategoryType.allCases) { searchCategoryType in
-                        Text(searchCategoryType.description)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                
+                SearchTabSelectionView()
                 SearchResultListView(currentCategory: $currentCategory, searchQuery: searchQuery)
             }
             .padding(.top, 8)
         }
+    }
+    
+    @ViewBuilder private func SearchTabSelectionView() -> some View {
+        Picker("", selection: $currentCategory) {
+            ForEach(SearchCategoryType.allCases) { searchCategoryType in
+                Text(searchCategoryType.description)
+            }
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal)
     }
 }
 
