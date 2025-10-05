@@ -4,9 +4,9 @@ import SwiftData
 struct GlobalSongsListView: View {
     @Query(sort: \Song.title) var songs: [Song]
     
+    @State private var currentSong: Song?
     @State private var songsSortOrder: SongSortOrder = .title
     @State private var searchQuery: String = ""
-    @State private var currentSong: Song?
     
     private var processedSongsList: [Song] {
         return DataController.shared.retrieveProcessedSongsList(of: songs, by: searchQuery) {
@@ -29,34 +29,7 @@ struct GlobalSongsListView: View {
                 if songs.isEmpty {
                     NoSongsView()
                 } else {
-                    SongsCollectionView(edges: [.bottom]) {
-                        ForEach(processedSongsList) { song in
-                            Button {
-                                
-                            } label: {
-                                SongItemView(song: song) {
-                                    Menu {
-                                        Button {
-                                            
-                                        } label: {
-                                            Label("Play next", systemImage: "play.fill")
-                                        }
-                                        
-                                        Button {
-                                            currentSong = song
-                                        } label: {
-                                            Label("Add to Playlist", systemImage: "music.pages.fill")
-                                        }
-                                    } label: {
-                                        Image(systemName: "ellipsis")
-                                            .font(.title2)
-                                            .foregroundStyle(.white)
-                                            .contentShape(.rect)
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    GlobalSongsListContentView()
                 }
             }
             .navigationTitle("Songs")
@@ -76,9 +49,40 @@ struct GlobalSongsListView: View {
                     }
                 }
             }
-            .sheet(item: $currentSong, content: { song in
+            .sheet(item: $currentSong) { song in
                 SongPlaylistSelectionView(song: song)
-            })
+            }
+        }
+    }
+    
+    @ViewBuilder private func GlobalSongsListContentView() -> some View {
+        SongsCollectionView(edges: [.bottom]) {
+            ForEach(processedSongsList) { song in
+                Button {
+                    
+                } label: {
+                    SongItemView(song: song) {
+                        Menu {
+                            Button {
+                                
+                            } label: {
+                                Label("Play next", systemImage: "play.fill")
+                            }
+                            
+                            Button {
+                                currentSong = song
+                            } label: {
+                                Label("Add to Playlist", systemImage: "music.pages.fill")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .font(.title2)
+                                .foregroundStyle(.white)
+                                .contentShape(.rect)
+                        }
+                    }
+                }
+            }
         }
     }
 }

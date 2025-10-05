@@ -29,34 +29,7 @@ struct SongsListView: View {
                 if processedSongsList.isEmpty {
                     NoSongsView()
                 } else {
-                    SongsCollectionView(edges: [.bottom]) {
-                        ForEach(processedSongsList) { song in
-                            Button {
-                                
-                            } label: {
-                                SongItemView(song: song) {
-                                    Menu {
-                                        Button {
-                                            
-                                        } label: {
-                                            Label("Play next", systemImage: "play.fill")
-                                        }
-                                        
-                                        Button {
-                                            currentSong = song
-                                        } label: {
-                                            Label("Add to Playlist", systemImage: "music.pages.fill")
-                                        }
-                                    } label: {
-                                        Image(systemName: "ellipsis")
-                                            .font(.title2)
-                                            .foregroundStyle(.white)
-                                            .contentShape(.rect)
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    SongsListContentView()
                 }
             }
             .navigationTitle(libraryItem.title)
@@ -87,9 +60,40 @@ struct SongsListView: View {
             .sheet(isPresented: $addSongs) {
                 SongLibraryItemSelectionView(libraryItem: libraryItem)
             }
-            .sheet(item: $currentSong, content: { song in
+            .sheet(item: $currentSong) { song in
                 SongPlaylistSelectionView(song: song)
-            })
+            }
+        }
+    }
+    
+    @ViewBuilder private func SongsListContentView() -> some View {
+        SongsCollectionView(edges: [.bottom]) {
+            ForEach(processedSongsList) { song in
+                Button {
+                    
+                } label: {
+                    SongItemView(song: song) {
+                        Menu {
+                            Button {
+                                
+                            } label: {
+                                Label("Play next", systemImage: "play.fill")
+                            }
+                            
+                            Button {
+                                currentSong = song
+                            } label: {
+                                Label("Add to Playlist", systemImage: "music.pages.fill")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .font(.title2)
+                                .foregroundStyle(.white)
+                                .contentShape(.rect)
+                        }
+                    }
+                }
+            }
         }
     }
 }
