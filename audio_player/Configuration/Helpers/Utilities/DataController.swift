@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import SwiftData
 import AVFoundation
 
@@ -69,5 +70,57 @@ final class DataController {
             cover: coverData,
             duration: duration
         )
+    }
+    
+    public func handleImportFiles(from result: Result<[URL], Error>, into libraryItem: LibraryItem? = nil, using modelContext: ModelContext) async {
+        switch result {
+        case .success(let success):
+            print("[Before inserting]: successfully entered handleImportFiles!")
+            guard let urls = success.first else {
+                return
+            }
+            
+            guard urls.startAccessingSecurityScopedResource() else {
+                return
+            }
+            
+            defer {
+                urls.stopAccessingSecurityScopedResource()
+            }
+            
+            
+            do {
+                let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                let destination = documents.appendingPathComponent(urls.lastPathComponent)
+                
+                if FileManager.default.fileExists(atPath: destination.path) {
+                    try FileManager.default.removeItem(at: destination)
+                }
+                
+                try FileManager.default.copyItem(at: urls, to: destination)
+                
+                let metadata = await DataController.shared.extractMetaData(from: destination)
+                let song = Song(
+                    title: metadata.title ?? "No title provided",
+                    artist: metadata.artist ?? "Unknown artist",
+                    duration: metadata.duration ?? 0,
+                    filePath: destination.lastPathComponent,
+                    fileName: destination.lastPathComponent,
+                    coverData: metadata.cover
+                )
+                
+                modelContext.insert(song)
+                if let libraryItem = libraryItem {
+                    print("Could enter to libraryItem")
+                    libraryItem.songs?.append(song)
+                }
+                
+                print("[After inserting]: successfully inserted Song!")
+                try modelContext.save()
+            } catch {
+            }
+        case .failure(let failure):
+            print("[Fatal error]: couldn't import files")
+        }
     }
 }

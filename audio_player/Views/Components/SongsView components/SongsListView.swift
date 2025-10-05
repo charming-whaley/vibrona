@@ -73,7 +73,7 @@ struct SongsListView: View {
             }
             .fileImporter(isPresented: $importsSongs, allowedContentTypes: [.mp3, .audio], allowsMultipleSelection: false) { result in
                 Task {
-                    await handleImportFiles(from: result)
+                    await DataController.shared.handleImportFiles(from: result, into: libraryItem, using: modelContext)
                 }
             }
         }
