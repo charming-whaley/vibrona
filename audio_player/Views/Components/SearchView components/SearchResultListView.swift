@@ -22,48 +22,56 @@ struct SearchResultListView: View {
             Group {
                 switch currentCategory {
                 case .songs:
-                    SongsCollectionView {
-                        ForEach(processedSongsList) { song in
-                            Button {
-                                
-                            } label: {
-                                SongItemView(song: song) {
-                                    Menu {
-                                        Button {
-                                            
-                                        } label: {
-                                            Label("Play next", systemImage: "play.fill")
-                                        }
-                                        
-                                        Button {
-                                            selectedSong = song
-                                        } label: {
-                                            Label("Add to Playlist", systemImage: "music.pages.fill")
-                                        }
-                                    } label: {
-                                        Image(systemName: "ellipsis")
-                                            .font(.title2)
-                                            .foregroundStyle(.white)
-                                            .contentShape(.rect)
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    SongsSearchResultCollectionView()
                 case .playlists:
-                    PlaylistsCollectionView(columns: columns) {
-                        ForEach(processedPlaylistsList) { playlist in
-                            NavigationLink {
-                                PlaylistView(playlist: playlist)
-                            } label: {
-                                MiniPlaylistItemView(playlist: playlist)
-                            }
-                        }
-                    }
+                    PlaylistsSearchResultCollectionView()
                 }
             }
             .sheet(item: $selectedSong) { song in
                 SongPlaylistSelectionView(song: song)
+            }
+        }
+    }
+    
+    @ViewBuilder private func SongsSearchResultCollectionView() -> some View {
+        SongsCollectionView {
+            ForEach(processedSongsList) { song in
+                Button {
+                    
+                } label: {
+                    SongItemView(song: song) {
+                        Menu {
+                            Button {
+                                
+                            } label: {
+                                Label("Play next", systemImage: "play.fill")
+                            }
+                            
+                            Button {
+                                selectedSong = song
+                            } label: {
+                                Label("Add to Playlist", systemImage: "music.pages.fill")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .font(.title2)
+                                .foregroundStyle(.white)
+                                .contentShape(.rect)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder private func PlaylistsSearchResultCollectionView() -> some View {
+        PlaylistsCollectionView(columns: columns) {
+            ForEach(processedPlaylistsList) { playlist in
+                NavigationLink {
+                    PlaylistView(playlist: playlist)
+                } label: {
+                    MiniPlaylistItemView(playlist: playlist)
+                }
             }
         }
     }
