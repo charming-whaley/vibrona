@@ -1,12 +1,19 @@
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
+import UIKit
+import AVFoundation
 
 struct SongsListView: View {
+    @Environment(\.modelContext) private var modelContext
+    
     @Bindable var libraryItem: LibraryItem
     @State private var songsSortOrder: SongSortOrder = .title
     @State private var searchQuery: String = ""
+    @State private var errorMessage: String = ""
     @State private var currentSong: Song?
     @State private var addSongs: Bool = false
+    @State private var importsSongs: Bool = false
     
     private var processedSongsList: [Song] {
         return DataController.shared.retrieveProcessedSongsList(of: libraryItem.songs, by: searchQuery) {
@@ -50,8 +57,9 @@ struct SongsListView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        addSongs.toggle()
+                    Menu {
+                        Button("Add from Library", action: { addSongs.toggle() })
+                        Button("Import from device", action: { importsSongs.toggle() })
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -62,6 +70,11 @@ struct SongsListView: View {
             }
             .sheet(item: $currentSong) { song in
                 SongPlaylistSelectionView(song: song)
+            }
+            .fileImporter(isPresented: $importsSongs, allowedContentTypes: [.mp3, .audio], allowsMultipleSelection: false) { result in
+                Task {
+                    await handleImportFiles(from: result)
+                }
             }
         }
     }
@@ -94,6 +107,63 @@ struct SongsListView: View {
                     }
                 }
             }
+        }
+    }
+    
+    private func handleImportFiles(from result: Result<[URL], Error>) async {
+        switch result {
+        case .success(let success):
+            print("[Before inserting]: successfully entered handleImportFiles!")
+            guard let urls = success.first else {
+                return
+            }
+            
+            guard urls.startAccessingSecurityScopedResource() else {
+                errorMessage = "Cannot access files!"
+                return
+            }
+            
+            defer {
+                urls.stopAccessingSecurityScopedResource()
+            }
+            
+            
+            do {
+                let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                let destination = documents.appendingPathComponent(urls.lastPathComponent)
+                
+                if FileManager.default.fileExists(atPath: destination.path) {
+                    try FileManager.default.removeItem(at: destination)
+                }
+                
+                try FileManager.default.copyItem(at: urls, to: destination)
+                
+                let metadata = await DataController.shared.extractMetaData(from: destination)
+                modelContext.insert(Song(
+                    title: metadata.title ?? "No title provided",
+                    artist: metadata.artist ?? "Unknown artist",
+                    duration: metadata.duration ?? 0,
+                    filePath: destination.lastPathComponent,
+                    fileName: destination.lastPathComponent,
+                    coverData: metadata.cover
+                ))
+                libraryItem.songs?.append(Song(
+                    title: metadata.title ?? "No title provided",
+                    artist: metadata.artist ?? "Unknown artist",
+                    duration: metadata.duration ?? 0,
+                    filePath: destination.lastPathComponent,
+                    fileName: destination.lastPathComponent,
+                    coverData: metadata.cover
+                ))
+                
+                print("[After inserting]: successfully inserted Song!")
+                
+                try modelContext.save()
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        case .failure(let failure):
+            errorMessage = failure.localizedDescription
         }
     }
 }
