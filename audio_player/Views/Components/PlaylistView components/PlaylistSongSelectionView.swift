@@ -19,29 +19,7 @@ struct PlaylistSongSelectionView: View {
                 if songs.isEmpty {
                     NoSongsView()
                 } else {
-                    SongsCollectionView(padding: .zero) {
-                        ForEach(processedSongsList) { song in
-                            SongItemView(song: song) {
-                                Button {
-                                    if let index = playlist.songs.firstIndex(where: { $0.id == song.id }) {
-                                        playlist.songs.remove(at: index)
-                                    } else {
-                                        playlist.songs.append(song)
-                                    }
-                                    
-                                    do {
-                                        try modelContext.save()
-                                    } catch {
-                                        print("[Fatal error]: couldn't update the model context due to:\n\n\(error)")
-                                    }
-                                } label: {
-                                    Image(systemName: playlist.songs.contains(where: { $0.id == song.id }) ? "plus.circle.fill" : "plus.circle")
-                                        .font(.system(size: 20))
-                                        .foregroundStyle(.white)
-                                }
-                            }
-                        }
-                    }
+                    PlaylistSongSelectionContentView()
                 }
             }
             .searchable(text: $searchQuery, prompt: Text("Search songs..."))
@@ -49,6 +27,32 @@ struct PlaylistSongSelectionView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         dismiss()
+                    }
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder private func PlaylistSongSelectionContentView() -> some View {
+        SongsCollectionView(padding: .zero) {
+            ForEach(processedSongsList) { song in
+                SongItemView(song: song) {
+                    Button {
+                        if let index = playlist.songs.firstIndex(where: { $0.id == song.id }) {
+                            playlist.songs.remove(at: index)
+                        } else {
+                            playlist.songs.append(song)
+                        }
+                        
+                        do {
+                            try modelContext.save()
+                        } catch {
+                            print("[Fatal error]: couldn't update the model context due to:\n\n\(error)")
+                        }
+                    } label: {
+                        Image(systemName: playlist.songs.contains(where: { $0.id == song.id }) ? "plus.circle.fill" : "plus.circle")
+                            .font(.system(size: 20))
+                            .foregroundStyle(.white)
                     }
                 }
             }

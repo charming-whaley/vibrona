@@ -5,15 +5,15 @@ import PhotosUI
 struct PlaylistView: View {
     @Environment(\.modelContext) private var modelContext
     
-    @State private var addsSongsToPlaylist: Bool = false
-    @State private var songsSortOrder: SongSortOrder = .title
-    @State private var notCorrectCoverImage: Bool = false
     @State private var photosPickerItem: PhotosPickerItem?
-    @State private var renamePlaylist: Bool = false
+    @State private var songsSortOrder: SongSortOrder = .title
     @State private var searchQuery: String = ""
+    @State private var newPlaylistTitle: String = "New playlist name"
     @State private var topInset: CGFloat = 0
     @State private var scrollOffsetY: CGFloat = 0
-    @State private var newPlaylistTitle: String = "New playlist name"
+    @State private var renamePlaylist: Bool = false
+    @State private var addsSongsToPlaylist: Bool = false
+    @State private var notCorrectCoverImage: Bool = false
     
     let playlist: Playlist
     private var processedSongsList: [Song] {
@@ -34,85 +34,13 @@ struct PlaylistView: View {
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
-                PhotosPicker(selection: $photosPickerItem) {
-                    Group {
-                        if let coverData = playlist.coverData {
-                            Image(uiImage: UIImage(data: coverData)!)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 300, height: 300)
-                                .clipShape(.rect(cornerRadius: 12))
-                        } else {
-                            EmptyCoverView(of: .init(width: 300, height: 300), with: .system(size: 50), of: 12)
-                        }
-                    }
-                    .padding(16)
-                    .background(PlaylistBackgroundFadeView(
-                        image: playlist.cover,
-                        topInset: $topInset,
-                        scrollOffsetY: $scrollOffsetY
-                    ))
-                    .zIndex(-1)
-                }
-                
-                Text(playlist.title)
-                    .font(.title3.bold())
-                    .padding(.bottom, 12)
-                    .contentShape(.rect)
-                    .onTapGesture {
-                        renamePlaylist.toggle()
-                    }
-                
-                Divider()
-                    .padding(.horizontal)
-                
-                Button {
-                    addsSongsToPlaylist.toggle()
-                } label: {
-                    AddSongToPlaylistButtonView()
-                }
+                PlaylistHeaderView()
                 
                 if processedSongsList.isEmpty {
                     NoSongsView()
                         .padding(.vertical, 40)
                 } else {
-                    LazyVStack {
-                        ForEach(processedSongsList) { song in
-                            SongItemView(song: song) {
-                                Menu {
-                                    Button {
-                                        
-                                    } label: {
-                                        Label("Play next", systemImage: "play.fill")
-                                    }
-                                    
-                                    Button {
-                                        
-                                    } label: {
-                                        Label("Hide", systemImage: "eye.slash.fill")
-                                    }
-                                    
-                                    Button(role: .destructive) {
-                                        playlist.songs.removeAll(where: { $0.id == song.id })
-                                        
-                                        do {
-                                            try modelContext.save()
-                                        } catch {
-                                            print("[Fatal error]: couldn't resolve the operation:\n\n\(error)")
-                                        }
-                                    } label: {
-                                        Label("Delete", systemImage: "trash.fill")
-                                    }
-                                } label: {
-                                    Image(systemName: "ellipsis")
-                                        .font(.title2)
-                                        .foregroundStyle(.white)
-                                        .contentShape(.rect)
-                                }
-                            }
-                        }
-                    }
-                    .padding(.bottom, 20)
+                    PlaylistSongsCollectionContentView()
                 }
             }
             .onScrollGeometryChange(for: ScrollGeometry.self, of: {
@@ -156,10 +84,7 @@ struct PlaylistView: View {
                 PlaylistSongSelectionView(playlist: playlist)
             }
             .alert("Broken image", isPresented: $notCorrectCoverImage) {
-                Button("Confirm") {
-                    photosPickerItem = nil
-                    notCorrectCoverImage.toggle()
-                }
+                Button("Confirm", action: confirmImageSelectionError)
             } message: {
                 Text("It seems like your image is broken. Try to choose another one!")
             }
@@ -167,21 +92,50 @@ struct PlaylistView: View {
                 TextField("Enter a new name...", text: $newPlaylistTitle)
                 
                 HStack {
-                    Button("Cancel") {
-                        renamePlaylist.toggle()
-                        newPlaylistTitle = "New playlist name"
-                    }
-                    
-                    Button("Rename") {
-                        playlist.title = newPlaylistTitle
-                        do {
-                            try modelContext.save()
-                        } catch {
-                            print("[Fatal error]: couldn't resolve the operation:\n\n\(error)")
-                        }
-                    }
+                    Button("Cancel", action: resetRenameAction)
+                    Button("Rename", action: renamePlaylistAction)
                 }
             }
+        }
+    }
+    
+    @ViewBuilder private func PlaylistHeaderView() -> some View {
+        PhotosPicker(selection: $photosPickerItem) {
+            Group {
+                if let coverData = playlist.coverData {
+                    Image(uiImage: UIImage(data: coverData)!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 300, height: 300)
+                        .clipShape(.rect(cornerRadius: 12))
+                } else {
+                    EmptyCoverView(of: .init(width: 300, height: 300), with: .system(size: 50), of: 12)
+                }
+            }
+            .padding(16)
+            .background(PlaylistBackgroundFadeView(
+                image: playlist.cover,
+                topInset: $topInset,
+                scrollOffsetY: $scrollOffsetY
+            ))
+            .zIndex(-1)
+        }
+        
+        Text(playlist.title)
+            .font(.title3.bold())
+            .padding(.bottom, 12)
+            .contentShape(.rect)
+            .onTapGesture {
+                renamePlaylist.toggle()
+            }
+        
+        Divider()
+            .padding(.horizontal)
+        
+        Button {
+            addsSongsToPlaylist.toggle()
+        } label: {
+            AddSongToPlaylistButtonView()
         }
     }
     
@@ -210,6 +164,68 @@ struct PlaylistView: View {
         }
         .padding(.horizontal)
         .contentShape(.rect)
+    }
+    
+    @ViewBuilder private func PlaylistSongsCollectionContentView() -> some View {
+        LazyVStack {
+            ForEach(processedSongsList) { song in
+                SongItemView(song: song) {
+                    Menu {
+                        Button {
+                            
+                        } label: {
+                            Label("Play next", systemImage: "play.fill")
+                        }
+                        
+                        Button {
+                            
+                        } label: {
+                            Label("Hide", systemImage: "eye.slash.fill")
+                        }
+                        
+                        Button(role: .destructive) {
+                            playlist.songs.removeAll(where: { $0.id == song.id })
+                            
+                            do {
+                                try modelContext.save()
+                            } catch {
+                                print("[Fatal error]: couldn't resolve the operation:\n\n\(error)")
+                            }
+                        } label: {
+                            Label("Delete", systemImage: "trash.fill")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.title2)
+                            .foregroundStyle(.white)
+                            .contentShape(.rect)
+                    }
+                }
+            }
+        }
+        .padding(.bottom, 20)
+    }
+    
+    private func confirmImageSelectionError() {
+        photosPickerItem = nil
+        notCorrectCoverImage.toggle()
+    }
+    
+    private func renamePlaylistAction() {
+        playlist.title = newPlaylistTitle
+        
+        do {
+            try modelContext.save()
+        } catch {
+            print("[Fatal error]: couldn't resolve the operation:\n\n\(error)")
+        }
+        
+        resetRenameAction()
+    }
+    
+    private func resetRenameAction() {
+        renamePlaylist.toggle()
+        newPlaylistTitle = "New playlist name"
     }
 }
 
