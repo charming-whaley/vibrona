@@ -28,14 +28,23 @@ struct SongItemView<Actions>: View where Actions: View {
     
     @ViewBuilder private func SongItemContentView() -> some View {
         HStack(spacing: 12) {
-            EmptyCoverView(of: .init(width: size.width, height: size.height), with: .callout, of: size.height / 4, with: .black)
+            if let cover = song.cover {
+                Image(uiImage: cover)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: size.width, height: size.height)
+                    .clipShape(.rect(cornerRadius: 15))
+            } else {
+                EmptyCoverView(of: .init(width: size.width, height: size.height), with: .callout, of: size.height / 4, with: .black)
+            }
+            
             SongItemInformationView()
         }
     }
     
     @ViewBuilder private func SongItemInformationView() -> some View {
         VStack(alignment: .leading, spacing: 3) {
-            Text(song.title)
+            Text(song.title == "No title provided" ? song.fileName?.removeFileExtension ?? "Weird file name" : song.title)
                 .font(.headline)
                 .foregroundStyle(.white)
             
