@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		89A384D32E84470300044FFA /* audio_player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = audio_player.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		89A384D32E84470300044FFA /* Vibrona.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vibrona.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		89A384D42E84470300044FFA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				89A384D32E84470300044FFA /* audio_player.app */,
+				89A384D32E84470300044FFA /* Vibrona.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		89A384D22E84470300044FFA /* audio_player */ = {
+		89A384D22E84470300044FFA /* Vibrona */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 89A384DE2E84470500044FFA /* Build configuration list for PBXNativeTarget "audio_player" */;
+			buildConfigurationList = 89A384DE2E84470500044FFA /* Build configuration list for PBXNativeTarget "Vibrona" */;
 			buildPhases = (
 				89A384CF2E84470300044FFA /* Sources */,
 				89A384D02E84470300044FFA /* Frameworks */,
@@ -63,11 +63,11 @@
 			fileSystemSynchronizedGroups = (
 				89A384D52E84470300044FFA /* audio_player */,
 			);
-			name = audio_player;
+			name = Vibrona;
 			packageProductDependencies = (
 			);
 			productName = audio_player;
-			productReference = 89A384D32E84470300044FFA /* audio_player.app */;
+			productReference = 89A384D32E84470300044FFA /* Vibrona.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				89A384D22E84470300044FFA /* audio_player */,
+				89A384D22E84470300044FFA /* Vibrona */,
 			);
 		};
 /* End PBXProject section */
@@ -334,7 +334,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		89A384DE2E84470500044FFA /* Build configuration list for PBXNativeTarget "audio_player" */ = {
+		89A384DE2E84470500044FFA /* Build configuration list for PBXNativeTarget "Vibrona" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				89A384DF2E84470500044FFA /* Debug */,
