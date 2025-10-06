@@ -72,6 +72,7 @@ final class DataController {
         )
     }
     
+    @MainActor
     public func handleImportFiles(
         from result: Result<[URL], Error>,
         into libraryItem: LibraryItem? = nil,
@@ -112,12 +113,18 @@ final class DataController {
                     coverData: metadata.cover
                 )
                 
-                modelContext.insert(song)
-                if let libraryItem = libraryItem {
-                    libraryItem.songs?.append(song)
+                try await MainActor.run {
+                    modelContext.insert(song)
+                    if let libraryItem = libraryItem {
+                        if libraryItem.songs == nil {
+                            libraryItem.songs = [Song]()
+                        }
+                        
+                        libraryItem.songs?.append(song)
+                    }
+                    
+                    try modelContext.save()
                 }
-                
-                try modelContext.save()
             } catch {
                 throw ImportFileError.contextSavingFailure
             }

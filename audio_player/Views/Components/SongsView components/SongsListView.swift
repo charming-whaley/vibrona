@@ -78,7 +78,11 @@ struct SongsListView: View {
             ) { result in
                 Task {
                     do {
-                        try await DataController.shared.handleImportFiles(from: result, using: modelContext)
+                        try await DataController.shared.handleImportFiles(
+                            from: result,
+                            into: libraryItem,
+                            using: modelContext
+                        )
                     } catch {
                         self.errorMessage = error.localizedDescription
                     }
