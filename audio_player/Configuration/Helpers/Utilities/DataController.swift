@@ -72,16 +72,19 @@ final class DataController {
         )
     }
     
-    public func handleImportFiles(from result: Result<[URL], Error>, into libraryItem: LibraryItem? = nil, using modelContext: ModelContext) async {
+    public func handleImportFiles(
+        from result: Result<[URL], Error>,
+        into libraryItem: LibraryItem? = nil,
+        using modelContext: ModelContext
+    ) async throws {
         switch result {
         case .success(let success):
-            print("[Before inserting]: successfully entered handleImportFiles!")
             guard let urls = success.first else {
-                return
+                throw ImportFileError.brokenURL
             }
             
             guard urls.startAccessingSecurityScopedResource() else {
-                return
+                throw ImportFileError.brokenURL
             }
             
             defer {
@@ -111,16 +114,15 @@ final class DataController {
                 
                 modelContext.insert(song)
                 if let libraryItem = libraryItem {
-                    print("Could enter to libraryItem")
                     libraryItem.songs?.append(song)
                 }
                 
-                print("[After inserting]: successfully inserted Song!")
                 try modelContext.save()
             } catch {
+                throw ImportFileError.contextSavingFailure
             }
-        case .failure(let failure):
-            print("[Fatal error]: couldn't import files")
+        case .failure(_):
+            throw ImportFileError.importFilesFailure
         }
     }
 }

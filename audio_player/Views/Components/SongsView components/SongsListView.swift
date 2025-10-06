@@ -71,9 +71,17 @@ struct SongsListView: View {
             .sheet(item: $currentSong) { song in
                 SongPlaylistSelectionView(song: song)
             }
-            .fileImporter(isPresented: $importsSongs, allowedContentTypes: [.mp3, .audio], allowsMultipleSelection: false) { result in
+            .fileImporter(
+                isPresented: $importsSongs,
+                allowedContentTypes: [.mp3, .audio],
+                allowsMultipleSelection: false
+            ) { result in
                 Task {
-                    await DataController.shared.handleImportFiles(from: result, into: libraryItem, using: modelContext)
+                    do {
+                        try await DataController.shared.handleImportFiles(from: result, using: modelContext)
+                    } catch {
+                        self.errorMessage = error.localizedDescription
+                    }
                 }
             }
         }
@@ -107,63 +115,6 @@ struct SongsListView: View {
                     }
                 }
             }
-        }
-    }
-    
-    private func handleImportFiles(from result: Result<[URL], Error>) async {
-        switch result {
-        case .success(let success):
-            print("[Before inserting]: successfully entered handleImportFiles!")
-            guard let urls = success.first else {
-                return
-            }
-            
-            guard urls.startAccessingSecurityScopedResource() else {
-                errorMessage = "Cannot access files!"
-                return
-            }
-            
-            defer {
-                urls.stopAccessingSecurityScopedResource()
-            }
-            
-            
-            do {
-                let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                let destination = documents.appendingPathComponent(urls.lastPathComponent)
-                
-                if FileManager.default.fileExists(atPath: destination.path) {
-                    try FileManager.default.removeItem(at: destination)
-                }
-                
-                try FileManager.default.copyItem(at: urls, to: destination)
-                
-                let metadata = await DataController.shared.extractMetaData(from: destination)
-                modelContext.insert(Song(
-                    title: metadata.title ?? "No title provided",
-                    artist: metadata.artist ?? "Unknown artist",
-                    duration: metadata.duration ?? 0,
-                    filePath: destination.lastPathComponent,
-                    fileName: destination.lastPathComponent,
-                    coverData: metadata.cover
-                ))
-                libraryItem.songs?.append(Song(
-                    title: metadata.title ?? "No title provided",
-                    artist: metadata.artist ?? "Unknown artist",
-                    duration: metadata.duration ?? 0,
-                    filePath: destination.lastPathComponent,
-                    fileName: destination.lastPathComponent,
-                    coverData: metadata.cover
-                ))
-                
-                print("[After inserting]: successfully inserted Song!")
-                
-                try modelContext.save()
-            } catch {
-                errorMessage = error.localizedDescription
-            }
-        case .failure(let failure):
-            errorMessage = failure.localizedDescription
         }
     }
 }

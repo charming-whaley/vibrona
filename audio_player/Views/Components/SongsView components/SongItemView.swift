@@ -45,6 +45,8 @@ struct SongItemView<Actions>: View where Actions: View {
     @ViewBuilder private func SongItemInformationView() -> some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(song.title == "No title provided" ? song.fileName?.removeFileExtension ?? "Weird file name" : song.title)
+                .lineLimit(1)
+                .truncationMode(.tail)
                 .font(.headline)
                 .foregroundStyle(.white)
             
