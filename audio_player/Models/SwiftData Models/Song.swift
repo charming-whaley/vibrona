@@ -21,7 +21,7 @@ final class Song {
         artist: String,
         duration: Double? = nil,
         filePath: String,
-        dateAdded: Date = .now,
+        dateAdded: Date = Date(),
         playCount: Int = 0,
         lastPlayed: Date? = nil,
         fileName: String? = nil,

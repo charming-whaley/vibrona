@@ -9,7 +9,12 @@ final class Playlist {
     @Relationship(deleteRule: .nullify) var songs: [Song] = []
     @Attribute(.externalStorage) var coverData: Data?
     
-    init(title: String, details: String? = nil, dateAdded: Date = .now, coverData: Data? = nil) {
+    init(
+        title: String,
+        details: String? = nil,
+        dateAdded: Date = Date(),
+        coverData: Data? = nil
+    ) {
         self.title = title
         self.details = details
         self.dateAdded = dateAdded
