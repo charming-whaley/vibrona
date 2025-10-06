@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 89A384CE2E84470300044FFA /* Build configuration list for PBXProject "audio_player" */;
+			buildConfigurationList = 89A384CE2E84470300044FFA /* Build configuration list for PBXProject "Vibrona" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -256,7 +256,7 @@
 				DEVELOPMENT_TEAM = 567894995K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Audio player";
+				INFOPLIST_KEY_CFBundleDisplayName = Vibrona;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -268,7 +268,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.katkovfedor.app.ios.audio-player";
+				PRODUCT_BUNDLE_IDENTIFIER = io.katkovfedor.app.ios.vibrona;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -294,7 +294,7 @@
 				DEVELOPMENT_TEAM = 567894995K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Audio player";
+				INFOPLIST_KEY_CFBundleDisplayName = Vibrona;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -306,7 +306,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.katkovfedor.app.ios.audio-player";
+				PRODUCT_BUNDLE_IDENTIFIER = io.katkovfedor.app.ios.vibrona;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -325,7 +325,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		89A384CE2E84470300044FFA /* Build configuration list for PBXProject "audio_player" */ = {
+		89A384CE2E84470300044FFA /* Build configuration list for PBXProject "Vibrona" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				89A384DC2E84470500044FFA /* Debug */,
