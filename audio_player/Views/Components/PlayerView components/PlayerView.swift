@@ -1,8 +1,24 @@
 import SwiftUI
+import SwiftData
 
 struct PlayerView: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(AudioViewModel.self) var audioViewModel: AudioViewModel
     @Environment(\.dismiss) private var dismiss
+    
+    @Query private var playlists: [Playlist]
+    
+    @State private var currentSong: Song?
+    @State private var savedInPlaylist: Bool = false
+    private var isSongSavedToPlaylist: Bool {
+        guard let currentSong = audioViewModel.currentSong else {
+            return false
+        }
+        
+        return playlists.contains { playlist in
+            playlist.songs.contains { $0.persistentModelID == currentSong.persistentModelID }
+        }
+    }
     
     var body: some View {
         GeometryReader { proxy in
@@ -26,15 +42,9 @@ struct PlayerView: View {
                         }
                         
                         Button {
-                            
+                            currentSong = audioViewModel.currentSong
                         } label: {
-                            Label("Add to songs group", systemImage: "music.pages.fill")
-                        }
-                        
-                        Button {
-                            
-                        } label: {
-                            Label("Song details", systemImage: "info.bubble.fill")
+                            Label("Add to Playlist", systemImage: "music.pages.fill")
                         }
                     } label: {
                         Image(systemName: "ellipsis")
@@ -54,6 +64,8 @@ struct PlayerView: View {
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: proxy.size.width, height: proxy.size.width)
                                 .clipShape(.rect(cornerRadius: 15))
+                        } else {
+                            EmptyCoverView(of: .init(width: proxy.size.width, height: proxy.size.width), with: .system(size: 70))
                         }
                     } else {
                         EmptyCoverView(of: .init(width: proxy.size.width, height: proxy.size.width), with: .system(size: 70))
@@ -86,9 +98,9 @@ struct PlayerView: View {
                             Spacer()
                             
                             Button {
-                                
+                                currentSong = audioViewModel.currentSong
                             } label: {
-                                Image(systemName: "plus.circle")
+                                Image(systemName: isSongSavedToPlaylist ? "plus.circle.fill" : "plus.circle")
                                     .font(.title)
                                     .foregroundStyle(.white)
                             }
@@ -150,9 +162,38 @@ struct PlayerView: View {
                 Spacer()
             }
         }
-        .background(SongBackgroundFadeView(image: UIImage(named: "a")!))
+        .background(SongBackgroundFadeView(image: audioViewModel.currentSong?.cover))
         .padding(25)
+//        .onAppear {
+//            setSongStatus()
+//        }
+//        .onChange(of: audioViewModel.currentSong) { _, _ in
+//            setSongStatus()
+//        }
+        .sheet(item: $currentSong) { song in
+            SongPlaylistSelectionView(song: song)
+        }
     }
+    
+//    private func setSongStatus() {
+//        if let currentSong = audioViewModel.currentSong {
+//            savedInPlaylist = checkIfPlaylistsContainSong(currentSong)
+//        } else {
+//            savedInPlaylist = false
+//        }
+//    }
+//    
+//    private func checkIfPlaylistsContainSong(_ song: Song) -> Bool {
+//        do {
+//            let playlists: [Playlist] = try modelContext.fetch(FetchDescriptor<Playlist>())
+//            
+//            return playlists.contains { playlist in
+//                playlist.songs.contains { $0.persistentModelID == song.persistentModelID }
+//            }
+//        } catch {
+//            fatalError("[Fatal error]: couldn't resolve the operation:\n\n\(error)")
+//        }
+//    }
 }
 
 #Preview {
