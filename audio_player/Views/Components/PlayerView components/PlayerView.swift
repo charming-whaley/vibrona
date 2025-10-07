@@ -33,25 +33,6 @@ struct PlayerView: View {
                     }
                     
                     Spacer()
-                    
-                    Menu {
-                        Button {
-                            
-                        } label: {
-                            Label("Hide song", systemImage: "xmark")
-                        }
-                        
-                        Button {
-                            currentSong = audioViewModel.currentSong
-                        } label: {
-                            Label("Add to Playlist", systemImage: "music.pages.fill")
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis")
-                            .font(.title2)
-                            .foregroundStyle(.foreground)
-                            .contentShape(.rect)
-                    }
                 }
                 
                 Spacer()
@@ -108,10 +89,14 @@ struct PlayerView: View {
                         .padding(.bottom, 10)
                         
                         VStack(spacing: 8) {
-                            RoundedRectangle(cornerRadius: 100)
-                                .fill(.blue)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 4)
+                            if let song = audioViewModel.currentSong, let _ = song.duration {
+                                // Left for progress bar to be added in the future
+                            } else {
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(.blue)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 4)
+                            }
                             
                             HStack(spacing: 0) {
                                 Text("0:00")
@@ -120,9 +105,15 @@ struct PlayerView: View {
                                 
                                 Spacer()
                                 
-                                Text("0:00")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                if let song = audioViewModel.currentSong, let duration = song.duration {
+                                    Text(duration.asTime)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                } else {
+                                    Text("0:00")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                         }
                         

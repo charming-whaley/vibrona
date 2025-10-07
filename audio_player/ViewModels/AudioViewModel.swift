@@ -5,5 +5,5 @@ import Observation
 final class AudioViewModel {
     var currentSong: Song?
     var isPlaying: Bool = false
-    var currentTime: Double = 0
+    var currentDurationPosition: Double = 0
 }
