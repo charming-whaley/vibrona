@@ -136,9 +136,9 @@ struct PlayerView: View {
                             }
                             
                             Button {
-                                
+                                audioViewModel.isPlaying.toggle()
                             } label: {
-                                Image(systemName: "play.fill")
+                                Image(systemName: audioViewModel.isPlaying ? "pause.fill" : "play.fill")
                                     .font(.system(size: 35))
                                     .foregroundStyle(.black)
                                     .padding()
