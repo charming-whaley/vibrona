@@ -51,14 +51,29 @@ struct LibraryView: View {
     }
     
     @ViewBuilder private func LibraryContentView() -> some View {
-        LazyVStack(spacing: 0) {
+        LazyVStack(alignment: .leading, spacing: 0) {
             LibraryHeaderView(addsNewSection: $addsNewSection, sortOrder: $sortOrder)
             
             ForEach(libraryItems) { libraryItem in
-                LibraryNavigationItemView(libraryItem)
+                if libraryItem.isSystemItem {
+                    LibraryNavigationItemView(libraryItem)
+                }
+            }
+            
+            Text("Your categories")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal)
+                .padding(.top, 12)
+                .padding(.bottom, 4)
+            
+            ForEach(libraryItems) { libraryItem in
+                if !libraryItem.isSystemItem {
+                    LibraryNavigationItemView(libraryItem)
+                }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
     
     @ViewBuilder private func LibraryNavigationItemView(_ libraryItem: LibraryItem) -> some View {
