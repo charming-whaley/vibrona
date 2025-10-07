@@ -135,17 +135,17 @@ struct PlayerView: View {
                                     .foregroundStyle(.white)
                             }
                             
-                            Button {
-                                audioViewModel.isPlaying.toggle()
-                            } label: {
+                            ZStack(alignment: .center) {
+                                Circle()
+                                    .fill(.white)
+                                    .frame(width: 65, height: 65)
+                                
                                 Image(systemName: audioViewModel.isPlaying ? "pause.fill" : "play.fill")
                                     .font(.system(size: 35))
                                     .foregroundStyle(.black)
-                                    .padding()
-                                    .background {
-                                        Circle()
-                                            .fill(.white)
-                                    }
+                            }
+                            .onTapGesture {
+                                audioViewModel.isPlaying.toggle()
                             }
                             
                             Button {
@@ -164,36 +164,10 @@ struct PlayerView: View {
         }
         .background(SongBackgroundFadeView(image: audioViewModel.currentSong?.cover))
         .padding(25)
-//        .onAppear {
-//            setSongStatus()
-//        }
-//        .onChange(of: audioViewModel.currentSong) { _, _ in
-//            setSongStatus()
-//        }
         .sheet(item: $currentSong) { song in
             SongPlaylistSelectionView(song: song)
         }
     }
-    
-//    private func setSongStatus() {
-//        if let currentSong = audioViewModel.currentSong {
-//            savedInPlaylist = checkIfPlaylistsContainSong(currentSong)
-//        } else {
-//            savedInPlaylist = false
-//        }
-//    }
-//    
-//    private func checkIfPlaylistsContainSong(_ song: Song) -> Bool {
-//        do {
-//            let playlists: [Playlist] = try modelContext.fetch(FetchDescriptor<Playlist>())
-//            
-//            return playlists.contains { playlist in
-//                playlist.songs.contains { $0.persistentModelID == song.persistentModelID }
-//            }
-//        } catch {
-//            fatalError("[Fatal error]: couldn't resolve the operation:\n\n\(error)")
-//        }
-//    }
 }
 
 #Preview {
