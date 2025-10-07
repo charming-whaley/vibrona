@@ -6,6 +6,7 @@ import AVFoundation
 
 struct SongsListView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AudioViewModel.self) var audioViewModel: AudioViewModel
     
     @Bindable var libraryItem: LibraryItem
     @State private var songsSortOrder: SongSortOrder = .title
@@ -95,7 +96,7 @@ struct SongsListView: View {
         SongsCollectionView(edges: [.bottom]) {
             ForEach(processedSongsList) { song in
                 Button {
-                    
+                    audioViewModel.currentSong = song
                 } label: {
                     SongItemView(song: song) {
                         Menu {

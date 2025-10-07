@@ -3,6 +3,7 @@ import SwiftData
 
 struct LibraryView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AudioViewModel.self) var audioViewModel: AudioViewModel
     @Query private var libraryItems: [LibraryItem]
     
     @State private var currentLibraryItem: LibraryItem?
@@ -167,4 +168,5 @@ struct LibraryView: View {
     return LibraryView()
         .preferredColorScheme(.dark)
         .modelContainer(preview.container)
+        .environment(AudioViewModel())
 }

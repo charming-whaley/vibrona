@@ -6,6 +6,7 @@ import AVFoundation
 
 struct GlobalSongsListView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AudioViewModel.self) var audioViewModel: AudioViewModel
     @Query(sort: \Song.title) var songs: [Song]
     
     @State private var currentSong: Song?
@@ -86,7 +87,7 @@ struct GlobalSongsListView: View {
         SongsCollectionView(edges: [.bottom]) {
             ForEach(processedSongsList) { song in
                 Button {
-                    
+                    audioViewModel.currentSong = song
                 } label: {
                     SongItemView(song: song) {
                         Menu {
@@ -121,4 +122,5 @@ struct GlobalSongsListView: View {
     return GlobalSongsListView()
         .preferredColorScheme(.dark)
         .modelContainer(preview.container)
+        .environment(AudioViewModel())
 }

@@ -1,13 +1,23 @@
 import SwiftUI
 
 struct MiniPlayerView: View {
+    @Bindable var audioViewModel: AudioViewModel
     let size: CGSize = .init(width: 32, height: 32)
     
     var body: some View {
         HStack(spacing: 15) {
             MiniPlayerLHSView()
+            
             Spacer()
-            MiniPlayerRHSView()
+            
+            Button {
+                
+            } label: {
+                Image(systemName: "play.fill")
+                    .contentShape(.rect)
+                    .foregroundStyle(.foreground)
+            }
+            .padding(.trailing, 10)
         }
         .padding(.horizontal)
         .contentShape(.rect)
@@ -18,36 +28,29 @@ struct MiniPlayerView: View {
             EmptyCoverView(of: size, with: .caption, of: size.width / 4, with: Color("AppDarkGrayColor"))
             
             VStack(alignment: .leading, spacing: 2) {
-                Text("Trash title")
-                    .font(.callout)
-                
-                Text("Trash artist")
-                    .font(.caption2)
-                    .foregroundStyle(.gray)
+                if let song = audioViewModel.currentSong {
+                    Text(song.title)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .font(.callout)
+                    
+                    Text(song.artist)
+                        .font(.caption2)
+                        .foregroundStyle(.gray)
+                } else {
+                    Text("No title")
+                        .font(.callout)
+                    
+                    Text("Unknown")
+                        .font(.caption2)
+                        .foregroundStyle(.gray)
+                }
             }
-        }
-    }
-    
-    @ViewBuilder private func MiniPlayerRHSView() -> some View {
-        Button {
-            
-        } label: {
-            Image(systemName: "play.fill")
-                .contentShape(.rect)
-                .foregroundStyle(.foreground)
-        }
-        .padding(.trailing, 10)
-        
-        Button {
-            
-        } label: {
-            Image(systemName: "forward.fill")
-                .contentShape(.rect)
-                .foregroundStyle(.foreground)
         }
     }
 }
 
 #Preview {
-    MiniPlayerView()
+    MiniPlayerView(audioViewModel: AudioViewModel())
+        .preferredColorScheme(.dark)
 }
