@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PlayerView: View {
+    @Environment(AudioViewModel.self) var audioViewModel: AudioViewModel
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -46,18 +47,40 @@ struct PlayerView: View {
                 Spacer()
                 
                 VStack(spacing: 50) {
-                    EmptyCoverView(of: .init(width: proxy.size.width, height: proxy.size.width), with: .system(size: 70))
+                    if let song = audioViewModel.currentSong {
+                        if let cover = song.cover {
+                            Image(uiImage: cover)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: proxy.size.width, height: proxy.size.width)
+                                .clipShape(.rect(cornerRadius: 15))
+                        }
+                    } else {
+                        EmptyCoverView(of: .init(width: proxy.size.width, height: proxy.size.width), with: .system(size: 70))
+                    }
                     
                     VStack(spacing: 15) {
                         HStack(spacing: 0) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Dummy song title")
-                                    .font(.title3.bold())
-                                    .foregroundStyle(.white)
-                                
-                                Text("Some dummy author")
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundStyle(.secondary)
+                                if let song = audioViewModel.currentSong {
+                                    Text(song.title)
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                        .font(.title3.bold())
+                                        .foregroundStyle(.white)
+                                    
+                                    Text(song.artist)
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundStyle(.secondary)
+                                } else {
+                                    Text("No title")
+                                        .font(.title3.bold())
+                                        .foregroundStyle(.white)
+                                    
+                                    Text("Unknown")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                             
                             Spacer()
@@ -134,5 +157,6 @@ struct PlayerView: View {
 
 #Preview {
     PlayerView()
+        .environment(AudioViewModel())
         .preferredColorScheme(.dark)
 }
