@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import AVKit
 
 struct PlayerView: View {
     @Environment(\.modelContext) private var modelContext
@@ -10,6 +11,7 @@ struct PlayerView: View {
     
     @State private var currentSong: Song?
     @State private var savedInPlaylist: Bool = false
+    
     private var isSongSavedToPlaylist: Bool {
         guard let currentSong = audioViewModel.currentSong else {
             return false

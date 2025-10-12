@@ -87,7 +87,7 @@ struct GlobalSongsListView: View {
         SongsCollectionView(edges: [.bottom]) {
             ForEach(processedSongsList) { song in
                 Button {
-                    audioViewModel.currentSong = song
+                    audioViewModel.play(song: song)
                 } label: {
                     SongItemView(song: song) {
                         Menu {
