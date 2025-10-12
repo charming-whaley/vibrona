@@ -6,6 +6,7 @@ import Observation
 final class AudioViewModel {
     var currentSong: Song?
     var isPlaying: Bool = false
+    var isSeeking: Bool = false
     var currentDurationPosition: Double = 0
     
     private var player: AVAudioPlayer?
@@ -43,6 +44,10 @@ final class AudioViewModel {
         }
     }
     
+    func seek(to time: Double) {
+        player?.currentTime = time
+    }
+    
     func stop() {
         player?.stop()
         isPlaying = false
@@ -77,7 +82,7 @@ final class AudioViewModel {
     }
     
     func updateProgress() {
-        guard let player = player else {
+        guard let player = player, !isSeeking else {
             return
         }
         

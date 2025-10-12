@@ -26,9 +26,7 @@ struct PlayerView: View {
         GeometryReader { proxy in
             VStack {
                 HStack(spacing: 0) {
-                    Button {
-                        dismiss()
-                    } label: {
+                    Button(action: { dismiss() }) {
                         Image(systemName: "chevron.down")
                             .font(.title2)
                             .foregroundStyle(.foreground)
@@ -41,12 +39,8 @@ struct PlayerView: View {
                 
                 VStack(spacing: 50) {
                     if let song = audioViewModel.currentSong {
-                        if let cover = song.cover {
-                            Image(uiImage: cover)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: proxy.size.width, height: proxy.size.width)
-                                .clipShape(.rect(cornerRadius: 15))
+                        if let image = song.cover {
+                            Image(uiImage: image)
                         } else {
                             EmptyCoverView(of: .init(width: proxy.size.width, height: proxy.size.width), with: .system(size: 70))
                         }
@@ -57,14 +51,14 @@ struct PlayerView: View {
                     VStack(spacing: 15) {
                         HStack(spacing: 0) {
                             VStack(alignment: .leading, spacing: 4) {
-                                if let song = audioViewModel.currentSong {
-                                    Text(song.title)
+                                if let currentSong = audioViewModel.currentSong {
+                                    Text(currentSong.title)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
                                         .font(.title3.bold())
                                         .foregroundStyle(.white)
                                     
-                                    Text(song.artist)
+                                    Text(currentSong.artist)
                                         .font(.system(size: 14, weight: .semibold))
                                         .foregroundStyle(.secondary)
                                 } else {
@@ -72,7 +66,7 @@ struct PlayerView: View {
                                         .font(.title3.bold())
                                         .foregroundStyle(.white)
                                     
-                                    Text("Unknown")
+                                    Text("Unknown artist")
                                         .font(.system(size: 14, weight: .semibold))
                                         .foregroundStyle(.secondary)
                                 }
@@ -80,9 +74,7 @@ struct PlayerView: View {
                             
                             Spacer()
                             
-                            Button {
-                                currentSong = audioViewModel.currentSong
-                            } label: {
+                            Button(action: { currentSong = audioViewModel.currentSong }) {
                                 Image(systemName: isSongSavedToPlaylist ? "plus.circle.fill" : "plus.circle")
                                     .font(.title)
                                     .foregroundStyle(.white)
@@ -91,29 +83,47 @@ struct PlayerView: View {
                         .padding(.bottom, 10)
                         
                         VStack(spacing: 8) {
-                            HStack(spacing: 0) {
-                                Text("0:00")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                            if let currentSong = audioViewModel.currentSong, let duration = currentSong.duration {
+                                PlayerProgressBarView(audioViewModel: audioViewModel, range: 0...duration) { isEditing in
+                                    audioViewModel.isSeeking = isEditing
+                                    if !isEditing {
+                                        audioViewModel.seek(to: audioViewModel.currentDurationPosition)
+                                    }
+                                }
                                 
-                                Spacer()
-                                
-                                if let song = audioViewModel.currentSong, let duration = song.duration {
+                                HStack(spacing: 0) {
+                                    Text(audioViewModel.currentDurationPosition.asTime)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    
+                                    Spacer()
+                                    
                                     Text(duration.asTime)
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
-                                } else {
+                                }
+                            } else {
+                                RoundedRectangle(cornerRadius: 100)
+                                    .fill(Color.gray.opacity(0.7))
+                                    .frame(height: 8)
+                                
+                                HStack(spacing: 0) {
+                                    Text(audioViewModel.currentDurationPosition.asTime)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    
+                                    Spacer()
+                                    
                                     Text("0:00")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
                             }
                         }
+                        .padding(.horizontal)
                         
                         HStack(spacing: 25) {
-                            Button {
-                                
-                            } label: {
+                            Button(action: {  }) {
                                 Image(systemName: "backward.fill")
                                     .font(.system(size: 30))
                                     .foregroundStyle(.white)
@@ -132,9 +142,7 @@ struct PlayerView: View {
                                 audioViewModel.toggle()
                             }
                             
-                            Button {
-                                
-                            } label: {
+                            Button(action: {  }) {
                                 Image(systemName: "forward.fill")
                                     .font(.system(size: 30))
                                     .foregroundStyle(.white)
@@ -142,8 +150,6 @@ struct PlayerView: View {
                         }
                     }
                 }
-                
-                Spacer()
             }
         }
         .background(SongBackgroundFadeView(image: audioViewModel.currentSong?.cover))
