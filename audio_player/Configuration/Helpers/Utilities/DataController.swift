@@ -92,7 +92,6 @@ final class DataController {
                 urls.stopAccessingSecurityScopedResource()
             }
             
-            
             do {
                 let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
                 let destination = documents.appendingPathComponent(urls.lastPathComponent)
@@ -110,7 +109,8 @@ final class DataController {
                     duration: metadata.duration ?? 0,
                     filePath: destination.lastPathComponent,
                     fileName: destination.lastPathComponent,
-                    coverData: metadata.cover
+                    coverData: metadata.cover,
+                    url: destination
                 )
                 
                 try await MainActor.run {

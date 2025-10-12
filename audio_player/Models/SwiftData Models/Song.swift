@@ -13,6 +13,7 @@ final class Song {
     var lastPlayed: Date?
     var fileName: String?
     var coverData: Data?
+    var url: URL?
     
     @Relationship(deleteRule: .nullify, inverse: \Playlist.songs) var playlists: [Playlist] = []
     
@@ -25,7 +26,8 @@ final class Song {
         playCount: Int = 0,
         lastPlayed: Date? = nil,
         fileName: String? = nil,
-        coverData: Data? = nil
+        coverData: Data? = nil,
+        url: URL? = nil
     ) {
         self.id = UUID()
         self.title = title
@@ -37,6 +39,7 @@ final class Song {
         self.lastPlayed = lastPlayed
         self.fileName = fileName
         self.coverData = coverData
+        self.url = url
     }
     
     var cover: UIImage? {

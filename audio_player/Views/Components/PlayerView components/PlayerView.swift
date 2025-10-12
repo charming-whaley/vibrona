@@ -89,8 +89,6 @@ struct PlayerView: View {
                         .padding(.bottom, 10)
                         
                         VStack(spacing: 8) {
-                            
-                            
                             HStack(spacing: 0) {
                                 Text("0:00")
                                     .font(.caption)
