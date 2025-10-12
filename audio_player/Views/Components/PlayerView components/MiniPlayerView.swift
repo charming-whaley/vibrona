@@ -11,7 +11,7 @@ struct MiniPlayerView: View {
             Spacer()
             
             Button {
-                audioViewModel.isPlaying.toggle()
+                audioViewModel.toggle()
             } label: {
                 Image(systemName: audioViewModel.isPlaying ? "pause.fill" : "play.fill")
                     .contentShape(.rect)

@@ -129,7 +129,7 @@ struct PlayerView: View {
                                     .foregroundStyle(.black)
                             }
                             .onTapGesture {
-                                audioViewModel.isPlaying.toggle()
+                                audioViewModel.toggle()
                             }
                             
                             Button {
