@@ -89,14 +89,7 @@ struct PlayerView: View {
                         .padding(.bottom, 10)
                         
                         VStack(spacing: 8) {
-                            if let song = audioViewModel.currentSong, let _ = song.duration {
-                                // Left for progress bar to be added in the future
-                            } else {
-                                RoundedRectangle(cornerRadius: 100)
-                                    .fill(.blue)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 4)
-                            }
+                            
                             
                             HStack(spacing: 0) {
                                 Text("0:00")
