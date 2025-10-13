@@ -2,6 +2,8 @@ import SwiftUI
 
 struct SongBackgroundFadeView: View {
     let image: UIImage?
+    var topPadding: CGFloat = -150
+    var bottomPadding: CGFloat = -60
     
     var body: some View {
         if let image = image {
@@ -29,8 +31,8 @@ struct SongBackgroundFadeView: View {
                 }
             }
             .containerRelativeFrame(.horizontal)
-            .padding(.bottom, -60)
-            .padding(.top, -150)
+            .padding(.top, topPadding)
+            .padding(.bottom, bottomPadding)
         } else {
             EmptyView()
         }

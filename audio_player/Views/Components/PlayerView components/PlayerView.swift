@@ -105,7 +105,7 @@ struct PlayerView: View {
                             } else {
                                 RoundedRectangle(cornerRadius: 100)
                                     .fill(Color.gray.opacity(0.7))
-                                    .frame(height: 8)
+                                    .frame(height: 6)
                                 
                                 HStack(spacing: 0) {
                                     Text(audioViewModel.currentDurationPosition.asTime)
@@ -120,7 +120,6 @@ struct PlayerView: View {
                                 }
                             }
                         }
-                        .padding(.horizontal)
                         
                         HStack(spacing: 25) {
                             Button(action: {  }) {
@@ -148,8 +147,12 @@ struct PlayerView: View {
                                     .foregroundStyle(.white)
                             }
                         }
+                        
+                        
                     }
                 }
+                
+                Spacer()
             }
         }
         .background(SongBackgroundFadeView(image: audioViewModel.currentSong?.cover))

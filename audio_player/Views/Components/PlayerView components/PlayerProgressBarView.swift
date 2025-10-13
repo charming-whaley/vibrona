@@ -10,22 +10,22 @@ struct PlayerProgressBarView: View {
             ZStack(alignment: .leading) {
                 Capsule()
                     .fill(Color.gray.opacity(0.3))
-                    .frame(height: 8)
+                    .frame(height: 6)
                 
                 Capsule()
                     .fill(Color.blue)
                     .frame(
                         width: proxy.size.width * CGFloat((audioViewModel.currentDurationPosition - range.lowerBound) / (range.upperBound - range.lowerBound)),
-                        height: 8
+                        height: 6
                     )
                     
                 Capsule()
                     .fill(Color.white)
-                    .frame(width: 20, height: 20)
+                    .frame(width: 18, height: 18)
                     .shadow(radius: 5)
                     .offset(x: proxy.size.width * CGFloat((audioViewModel.currentDurationPosition - range.lowerBound) / (range.upperBound - range.lowerBound)) - 10)
             }
-            .frame(height: 20)
+            .frame(height: 18)
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
@@ -39,6 +39,6 @@ struct PlayerProgressBarView: View {
             )
             
         }
-        .frame(height: 20)
+        .frame(height: 18)
     }
 }

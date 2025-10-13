@@ -20,6 +20,11 @@ struct MiniPlayerView: View {
             .padding(.trailing, 10)
         }
         .padding(.horizontal)
+        .background(SongBackgroundFadeView(
+            image: audioViewModel.currentSong?.cover,
+            topPadding: -45,
+            bottomPadding: -16
+        ))
         .contentShape(.rect)
     }
     
