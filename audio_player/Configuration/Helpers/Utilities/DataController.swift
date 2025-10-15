@@ -109,8 +109,7 @@ final class DataController {
                     duration: metadata.duration ?? 0,
                     filePath: destination.lastPathComponent,
                     fileName: destination.lastPathComponent,
-                    coverData: metadata.cover,
-                    url: destination
+                    coverData: metadata.cover
                 )
                 
                 try await MainActor.run {

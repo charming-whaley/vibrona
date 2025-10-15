@@ -34,7 +34,7 @@ struct MiniPlayerView: View {
             
             VStack(alignment: .leading, spacing: 2) {
                 if let song = audioViewModel.currentSong {
-                    Text(song.title)
+                    Text(song.title == "No title provided" ? song.fileName?.removeFileExtension ?? "Weird file name" : song.title)
                         .lineLimit(1)
                         .truncationMode(.tail)
                         .font(.callout)
@@ -43,7 +43,7 @@ struct MiniPlayerView: View {
                         .font(.caption2)
                         .foregroundStyle(.gray)
                 } else {
-                    Text("No title")
+                    Text("Empty title")
                         .font(.callout)
                     
                     Text("Unknown")

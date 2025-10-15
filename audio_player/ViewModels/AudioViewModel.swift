@@ -22,11 +22,6 @@ final class AudioViewModel {
             return
         }
         
-        guard url.startAccessingSecurityScopedResource() else {
-            print("[Fatal error]: couldn't access song")
-            return
-        }
-        
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
@@ -35,8 +30,6 @@ final class AudioViewModel {
             player?.numberOfLoops = isRepeating ? -1 : 0
             player?.prepareToPlay()
             player?.play()
-            
-            url.stopAccessingSecurityScopedResource()
             
             self.isPlaying = true
             startTimer()

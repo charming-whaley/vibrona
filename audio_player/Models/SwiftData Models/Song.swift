@@ -12,10 +12,16 @@ final class Song {
     var playCount: Int
     var lastPlayed: Date?
     var fileName: String?
-    var coverData: Data?
-    var url: URL?
-    
+    @Attribute(.externalStorage) var coverData: Data?
     @Relationship(deleteRule: .nullify, inverse: \Playlist.songs) var playlists: [Playlist] = []
+    
+    var url: URL? {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return nil
+        }
+        
+        return documentsDirectory.appendingPathComponent(self.filePath)
+    }
     
     init(
         title: String,
@@ -27,7 +33,6 @@ final class Song {
         lastPlayed: Date? = nil,
         fileName: String? = nil,
         coverData: Data? = nil,
-        url: URL? = nil
     ) {
         self.id = UUID()
         self.title = title
@@ -39,7 +44,6 @@ final class Song {
         self.lastPlayed = lastPlayed
         self.fileName = fileName
         self.coverData = coverData
-        self.url = url
     }
     
     var cover: UIImage? {
