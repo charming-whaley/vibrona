@@ -147,8 +147,16 @@ struct PlayerView: View {
                                     .foregroundStyle(.white)
                             }
                         }
-                        
-                        
+                        .frame(maxWidth: .infinity)
+                        .overlay(alignment: .leading) {
+                            Image(systemName: audioViewModel.isRepeating ? "repeat.1" : "repeat")
+                                .font(.title3)
+                                .foregroundStyle(audioViewModel.isRepeating ? .blue : .white)
+                                .onTapGesture {
+                                    audioViewModel.toggleRepeat()
+                                }
+                                .disabled(!audioViewModel.isPlaying)
+                        }
                     }
                 }
                 

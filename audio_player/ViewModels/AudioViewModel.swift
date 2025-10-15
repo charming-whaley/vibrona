@@ -7,6 +7,7 @@ final class AudioViewModel {
     var currentSong: Song?
     var isPlaying: Bool = false
     var isSeeking: Bool = false
+    var isRepeating: Bool = false
     var currentDurationPosition: Double = 0
     
     private var player: AVAudioPlayer?
@@ -31,6 +32,7 @@ final class AudioViewModel {
             try AVAudioSession.sharedInstance().setActive(true)
             
             player = try AVAudioPlayer(contentsOf: url)
+            player?.numberOfLoops = isRepeating ? -1 : 0
             player?.prepareToPlay()
             player?.play()
             
@@ -42,6 +44,11 @@ final class AudioViewModel {
             print("[Fatal error]: couldn't load audio:\n\n\(error)")
             self.isPlaying = false
         }
+    }
+    
+    func toggleRepeat() {
+        isRepeating.toggle()
+        player?.numberOfLoops = isPlaying ? -1 : 0
     }
     
     func seek(to time: Double) {
