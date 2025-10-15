@@ -25,7 +25,20 @@ struct MiniPlayerView: View {
             topPadding: -45,
             bottomPadding: -16
         ))
+        .ignoresSafeArea()
         .contentShape(.rect)
+        .overlay {
+            Group {
+                if let currentSong = audioViewModel.currentSong, let duration = currentSong.duration {
+                    MiniPlayerProgressBarView(audioViewModel: audioViewModel, range: 0...duration)
+                } else {
+                    RoundedRectangle(cornerRadius: 100)
+                        .fill(Color.gray.opacity(0.7))
+                        .frame(height: 2)
+                }
+            }
+            .padding(.top, 45)
+        }
     }
     
     @ViewBuilder private func MiniPlayerLHSView() -> some View {

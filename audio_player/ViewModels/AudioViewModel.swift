@@ -9,6 +9,7 @@ final class AudioViewModel {
     var isSeeking: Bool = false
     var isRepeating: Bool = false
     var currentDurationPosition: Double = 0
+    var playbackQueue = [Song]()
     
     private var player: AVAudioPlayer?
     private var timer: Timer?
@@ -37,15 +38,6 @@ final class AudioViewModel {
             print("[Fatal error]: couldn't load audio:\n\n\(error)")
             self.isPlaying = false
         }
-    }
-    
-    func toggleRepeat() {
-        isRepeating.toggle()
-        player?.numberOfLoops = isPlaying ? -1 : 0
-    }
-    
-    func seek(to time: Double) {
-        player?.currentTime = time
     }
     
     func stop() {
@@ -79,6 +71,15 @@ final class AudioViewModel {
     func stopTimer() {
         timer?.invalidate()
         timer = nil
+    }
+    
+    func toggleRepeat() {
+        isRepeating.toggle()
+        player?.numberOfLoops = isPlaying ? -1 : 0
+    }
+    
+    func seek(to time: Double) {
+        player?.currentTime = time
     }
     
     func updateProgress() {

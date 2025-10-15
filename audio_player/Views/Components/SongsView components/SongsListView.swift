@@ -97,7 +97,7 @@ struct SongsListView: View {
                     SongItemView(song: song) {
                         Menu {
                             Button {
-                                
+                                audioViewModel.play(song: song)
                             } label: {
                                 Label("Play next", systemImage: "play.fill")
                             }
