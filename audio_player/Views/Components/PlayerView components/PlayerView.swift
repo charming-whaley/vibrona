@@ -62,11 +62,6 @@ struct PlayerView: View {
                                     )
                                     .bold()
                                     .foregroundStyle(.white)
-                                    
-//                                    Text(currentSong.title == "No title provided" ? currentSong.fileName?.removeFileExtension ?? "Weird file name" : currentSong.title)
-//                                        .lineLimit(1)
-//                                        .truncationMode(.tail)
-//                                        .font(.title3.bold())
                                         
                                     
                                     Text(currentSong.artist)

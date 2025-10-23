@@ -4,6 +4,7 @@ import PhotosUI
 
 struct PlaylistView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AudioViewModel.self) var audioViewModel
     
     @State private var photosPickerItem: PhotosPickerItem?
     @State private var songsSortOrder: SongSortOrder = .title
@@ -169,36 +170,40 @@ struct PlaylistView: View {
     @ViewBuilder private func PlaylistSongsCollectionContentView() -> some View {
         LazyVStack {
             ForEach(processedSongsList) { song in
-                SongItemView(song: song) {
-                    Menu {
-                        Button {
+                Button {
+                    audioViewModel.play(song: song)
+                } label: {
+                    SongItemView(song: song) {
+                        Menu {
+                            Button {
+                                audioViewModel.play(song: song)
+                            } label: {
+                                Label("Play next", systemImage: "play.fill")
+                            }
                             
-                        } label: {
-                            Label("Play next", systemImage: "play.fill")
-                        }
-                        
-                        Button {
+                            Button {
+                                
+                            } label: {
+                                Label("Hide", systemImage: "eye.slash.fill")
+                            }
                             
-                        } label: {
-                            Label("Hide", systemImage: "eye.slash.fill")
-                        }
-                        
-                        Button(role: .destructive) {
-                            playlist.songs.removeAll(where: { $0.id == song.id })
-                            
-                            do {
-                                try modelContext.save()
-                            } catch {
-                                print("[Fatal error]: couldn't resolve the operation:\n\n\(error)")
+                            Button(role: .destructive) {
+                                playlist.songs.removeAll(where: { $0.id == song.id })
+                                
+                                do {
+                                    try modelContext.save()
+                                } catch {
+                                    print("[Fatal error]: couldn't resolve the operation:\n\n\(error)")
+                                }
+                            } label: {
+                                Label("Delete", systemImage: "trash.fill")
                             }
                         } label: {
-                            Label("Delete", systemImage: "trash.fill")
+                            Image(systemName: "ellipsis")
+                                .font(.title2)
+                                .foregroundStyle(.white)
+                                .contentShape(.rect)
                         }
-                    } label: {
-                        Image(systemName: "ellipsis")
-                            .font(.title2)
-                            .foregroundStyle(.white)
-                            .contentShape(.rect)
                     }
                 }
             }

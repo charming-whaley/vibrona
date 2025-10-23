@@ -12,6 +12,7 @@ struct RootView: View {
         TabView {
             Tab("Library", systemImage: "square.grid.2x2.fill") {
                 LibraryView()
+                    .environment(audioViewModel)
             }
             
             Tab("Settings", systemImage: "gearshape.fill") {
