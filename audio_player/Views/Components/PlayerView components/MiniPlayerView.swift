@@ -1,6 +1,8 @@
 import SwiftUI
+import MarqueeText
 
 struct MiniPlayerView: View {
+    var velocity: CGFloat = 50
     @Bindable var audioViewModel: AudioViewModel
     let size: CGSize = .init(width: 32, height: 32)
     
@@ -31,10 +33,6 @@ struct MiniPlayerView: View {
             Group {
                 if let currentSong = audioViewModel.currentSong, let duration = currentSong.duration {
                     MiniPlayerProgressBarView(audioViewModel: audioViewModel, range: 0...duration)
-                } else {
-                    RoundedRectangle(cornerRadius: 100)
-                        .fill(Color.gray.opacity(0.7))
-                        .frame(height: 2)
                 }
             }
             .padding(.top, 45)
@@ -47,10 +45,13 @@ struct MiniPlayerView: View {
             
             VStack(alignment: .leading, spacing: 2) {
                 if let song = audioViewModel.currentSong {
-                    Text(song.title == "No title provided" ? song.fileName?.removeFileExtension ?? "Weird file name" : song.title)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                        .font(.callout)
+                    MarqueeText(
+                        text: song.title == "No title provided" ? song.fileName?.removeFileExtension ?? "Weird file name" : song.title,
+                        font: UIFont.preferredFont(forTextStyle: .callout),
+                        leftFade: 16,
+                        rightFade: 16,
+                        startDelay: 3
+                    )
                     
                     Text(song.artist)
                         .font(.caption2)

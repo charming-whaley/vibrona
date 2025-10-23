@@ -1,0 +1,15 @@
+{
+  "originHash" : "d7babf487036e76d623bcd6888c5979adb426ff8a1ca287a83abd6c65cd53d51",
+  "pins" : [
+    {
+      "identity" : "marqueetext",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/joekndy/MarqueeText.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "22309f6863a182e81a2b4ebbca8cdc044f854b33"
+      }
+    }
+  ],
+  "version" : 3
+}
