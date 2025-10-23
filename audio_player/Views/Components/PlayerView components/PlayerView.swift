@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import AVKit
+import MarqueeText
 
 struct PlayerView: View {
     @Environment(\.modelContext) private var modelContext
@@ -52,11 +53,21 @@ struct PlayerView: View {
                         HStack(spacing: 0) {
                             VStack(alignment: .leading, spacing: 4) {
                                 if let currentSong = audioViewModel.currentSong {
-                                    Text(currentSong.title == "No title provided" ? currentSong.fileName?.removeFileExtension ?? "Weird file name" : currentSong.title)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                        .font(.title3.bold())
-                                        .foregroundStyle(.white)
+                                    MarqueeText(
+                                        text: currentSong.title == "No title provided" ? currentSong.fileName?.removeFileExtension ?? "Weird file name" : currentSong.title,
+                                        font: UIFont.preferredFont(forTextStyle: .title3),
+                                        leftFade: 16,
+                                        rightFade: 16,
+                                        startDelay: 3
+                                    )
+                                    .bold()
+                                    .foregroundStyle(.white)
+                                    
+//                                    Text(currentSong.title == "No title provided" ? currentSong.fileName?.removeFileExtension ?? "Weird file name" : currentSong.title)
+//                                        .lineLimit(1)
+//                                        .truncationMode(.tail)
+//                                        .font(.title3.bold())
+                                        
                                     
                                     Text(currentSong.artist)
                                         .font(.system(size: 14, weight: .semibold))
