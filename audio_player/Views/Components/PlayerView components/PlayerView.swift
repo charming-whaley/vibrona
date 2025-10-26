@@ -176,7 +176,7 @@ struct PlayerView: View {
                                     .onTapGesture {
                                         audioViewModel.shuffle()
                                     }
-                                    .disabled(audioViewModel.playbackQueue.isEmpty || audioViewModel.playbackQueue.count <= 2)
+                                    .disabled(audioViewModel.playbackQueueBeforeShuffling.isEmpty || audioViewModel.playbackQueueBeforeShuffling.count <= 2)
                             }
                         }
                     }
