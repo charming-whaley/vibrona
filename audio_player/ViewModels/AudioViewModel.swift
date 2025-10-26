@@ -63,6 +63,15 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
         }
     }
     
+    func toggleRepeat() {
+        isRepeating.toggle()
+        player?.numberOfLoops = isPlaying ? -1 : 0
+    }
+    
+    func seek(to time: Double) {
+        player?.currentTime = time
+    }
+    
     func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { [weak self] _ in
             self?.updateProgress()
@@ -72,15 +81,6 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
     func stopTimer() {
         timer?.invalidate()
         timer = nil
-    }
-    
-    func toggleRepeat() {
-        isRepeating.toggle()
-        player?.numberOfLoops = isPlaying ? -1 : 0
-    }
-    
-    func seek(to time: Double) {
-        player?.currentTime = time
     }
     
     func updateProgress() {
