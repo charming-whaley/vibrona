@@ -8,6 +8,7 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
     var isPlaying: Bool = false
     var isSeeking: Bool = false
     var isRepeating: Bool = false
+    var isShuffled: Bool = false
     var currentDurationPosition: Double = 0
     var playbackQueue = [Song]()
     

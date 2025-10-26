@@ -158,14 +158,26 @@ struct PlayerView: View {
                             }
                         }
                         .frame(maxWidth: .infinity)
-                        .overlay(alignment: .leading) {
-                            Image(systemName: audioViewModel.isRepeating ? "repeat.1" : "repeat")
-                                .font(.title3)
-                                .foregroundStyle(audioViewModel.isRepeating ? .blue : .white)
-                                .onTapGesture {
-                                    audioViewModel.toggleRepeat()
-                                }
-                                .disabled(!audioViewModel.isPlaying)
+                        .overlay {
+                            HStack(spacing: 0) {
+                                Image(systemName: audioViewModel.isRepeating ? "repeat.1" : "repeat")
+                                    .font(.title3)
+                                    .foregroundStyle(audioViewModel.isRepeating ? .blue : .white)
+                                    .onTapGesture {
+                                        audioViewModel.toggleRepeat()
+                                    }
+                                    .disabled(!audioViewModel.isPlaying)
+                                
+                                Spacer()
+                                
+                                Image(systemName: "shuffle")
+                                    .font(.title3)
+                                    .foregroundStyle(audioViewModel.isShuffled ? .blue : .white)
+                                    .onTapGesture {
+                                        
+                                    }
+                                    .disabled(audioViewModel.playbackQueue.isEmpty || audioViewModel.playbackQueue.count <= 2)
+                            }
                         }
                     }
                 }
