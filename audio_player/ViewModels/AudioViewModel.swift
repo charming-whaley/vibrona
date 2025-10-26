@@ -10,7 +10,9 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
     var isRepeating: Bool = false
     var isShuffled: Bool = false
     var currentDurationPosition: Double = 0
+    
     var playbackQueue = [Song]()
+    var playbackQueueBeforeShuffling = [Song]()
     
     private var player: AVAudioPlayer?
     private var timer: Timer?
@@ -18,6 +20,10 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
     func play(song: Song) {
         stop()
         self.currentSong = song
+        
+        if !checkIfSongBelongsToPlaybackQueue(song: song) {
+            addToPlaybackQueue(song: song)
+        }
         
         guard let url = song.url else {
             print("[Fatal error]: couldn't retrieve song's url")
@@ -93,17 +99,46 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
     }
     
     func addToPlaybackQueue(song: Song) {
-        if !checkIfSongBelongsToPlaybackQueue(song: song) {
-            playbackQueue.append(song)
+        if !playbackQueueBeforeShuffling.contains(song) {
+            playbackQueueBeforeShuffling.append(song)
+            
+            if isShuffled {
+                let index = playbackQueue.isEmpty ? 0 : Int.random(in: 1..<playbackQueue.count + 1)
+                playbackQueue.insert(song, at: index)
+            } else {
+                playbackQueue.append(song)
+            }
         }
     }
     
     func checkIfSongBelongsToPlaybackQueue(song: Song) -> Bool {
-        return playbackQueue.contains(song)
+        return playbackQueueBeforeShuffling.contains(song)
     }
     
     func removeFromPlaybackQueue(song: Song) {
         playbackQueue.removeAll(where: { $0 == song })
+        playbackQueueBeforeShuffling.removeAll(where: { $0 == song })
+    }
+    
+    func shuffle() {
+        isShuffled.toggle()
+        
+        guard
+            let currentSong = currentSong,
+            let currentSongIndex = playbackQueue.firstIndex(of: currentSong)
+        else {
+            playbackQueue = isShuffled ? playbackQueueBeforeShuffling.shuffled() : playbackQueueBeforeShuffling
+            return
+        }
+        
+        if isShuffled {
+            var temporaryPlaybackQueue = playbackQueue
+            temporaryPlaybackQueue.remove(at: currentSongIndex)
+            temporaryPlaybackQueue.shuffle()
+            playbackQueue = [currentSong] + temporaryPlaybackQueue
+        } else {
+            playbackQueue = playbackQueueBeforeShuffling
+        }
     }
     
     func playNextSongInPlaybackQueue() {

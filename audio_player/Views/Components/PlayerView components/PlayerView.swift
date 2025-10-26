@@ -174,7 +174,7 @@ struct PlayerView: View {
                                     .font(.title3)
                                     .foregroundStyle(audioViewModel.isShuffled ? .blue : .white)
                                     .onTapGesture {
-                                        
+                                        audioViewModel.shuffle()
                                     }
                                     .disabled(audioViewModel.playbackQueue.isEmpty || audioViewModel.playbackQueue.count <= 2)
                             }
