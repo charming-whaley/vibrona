@@ -3,7 +3,7 @@ import AVFoundation
 import Observation
 
 @Observable
-final class AudioViewModel {
+final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
     var currentSong: Song?
     var isPlaying: Bool = false
     var isSeeking: Bool = false
@@ -88,5 +88,47 @@ final class AudioViewModel {
         }
         
         currentDurationPosition = player.currentTime
+    }
+    
+    func addToPlaybackQueue(song: Song) {
+        if !checkIfSongBelongsToPlaybackQueue(song: song) {
+            playbackQueue.append(song)
+        }
+    }
+    
+    func checkIfSongBelongsToPlaybackQueue(song: Song) -> Bool {
+        return playbackQueue.contains(song)
+    }
+    
+    func removeFromPlaybackQueue(song: Song) {
+        playbackQueue.removeAll(where: { $0 == song })
+    }
+    
+    private func playNextSongInPlaybackQueue() {
+        guard !playbackQueue.isEmpty else {
+            stop()
+            currentSong = nil
+            return
+        }
+        
+        if let currentSong = currentSong,
+           let currentIndex = playbackQueue.firstIndex(of: currentSong) {
+            let next = (currentIndex + 1) % playbackQueue.count
+            play(song: playbackQueue[next])
+        } else {
+            if let firstSong = playbackQueue.first {
+                play(song: firstSong)
+            }
+        }
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        guard !flag else {
+            return
+        }
+        
+        if !isRepeating {
+            playNextSongInPlaybackQueue()
+        }
     }
 }
