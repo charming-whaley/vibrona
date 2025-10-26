@@ -28,6 +28,7 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
             try AVAudioSession.sharedInstance().setActive(true)
             
             player = try AVAudioPlayer(contentsOf: url)
+            player?.delegate = self
             player?.numberOfLoops = isRepeating ? -1 : 0
             player?.prepareToPlay()
             player?.play()
@@ -104,20 +105,34 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
         playbackQueue.removeAll(where: { $0 == song })
     }
     
-    private func playNextSongInPlaybackQueue() {
+    func playNextSongInPlaybackQueue() {
         guard !playbackQueue.isEmpty else {
-            stop()
-            currentSong = nil
             return
         }
         
         if let currentSong = currentSong,
-           let currentIndex = playbackQueue.firstIndex(of: currentSong) {
-            let next = (currentIndex + 1) % playbackQueue.count
+           let currentSongIndex = playbackQueue.firstIndex(of: currentSong) {
+            let next = (currentSongIndex + 1) % playbackQueue.count
             play(song: playbackQueue[next])
         } else {
             if let firstSong = playbackQueue.first {
                 play(song: firstSong)
+            }
+        }
+    }
+    
+    func playPreviousSongInPlaybackQueue() {
+        guard !playbackQueue.isEmpty else {
+            return
+        }
+        
+        if let currentSong = currentSong,
+           let currentSongIndex = playbackQueue.firstIndex(of: currentSong) {
+            let previous = (currentSongIndex - 1 + playbackQueue.count) % playbackQueue.count
+            play(song: playbackQueue[previous])
+        } else {
+            if let lastSong = playbackQueue.last {
+                play(song: lastSong)
             }
         }
     }
@@ -129,6 +144,24 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
         
         if !isRepeating {
             playNextSongInPlaybackQueue()
+        }
+    }
+    
+    private func playSongInPlaybackQueue() {
+        guard !playbackQueue.isEmpty else {
+            stop()
+            currentSong = nil
+            return
+        }
+        
+        if let currentSong = currentSong,
+           let currentSongIndex = playbackQueue.firstIndex(of: currentSong) {
+            let next = (currentSongIndex + 1) % playbackQueue.count
+            play(song: playbackQueue[next])
+        } else {
+            if let firstSong = playbackQueue.first {
+                play(song: firstSong)
+            }
         }
     }
 }
