@@ -11,8 +11,8 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
     var isShuffled: Bool = false
     var currentDurationPosition: Double = 0
     
-    var playbackQueue = [Song]()
     var playbackQueueBeforeShuffling = [Song]()
+    var playbackQueueAfterShuffling = [Song]()
     
     private var player: AVAudioPlayer?
     private var timer: Timer?
@@ -103,10 +103,10 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
             playbackQueueBeforeShuffling.append(song)
             
             if isShuffled {
-                let index = playbackQueue.isEmpty ? 0 : Int.random(in: 1..<playbackQueue.count + 1)
-                playbackQueue.insert(song, at: index)
+                let index = playbackQueueAfterShuffling.isEmpty ? 0 : Int.random(in: 1..<playbackQueueAfterShuffling.count + 1)
+                playbackQueueAfterShuffling.insert(song, at: index)
             } else {
-                playbackQueue.append(song)
+                playbackQueueAfterShuffling.append(song)
             }
         }
     }
@@ -116,7 +116,7 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
     }
     
     func removeFromPlaybackQueue(song: Song) {
-        playbackQueue.removeAll(where: { $0 == song })
+        playbackQueueAfterShuffling.removeAll(where: { $0 == song })
         playbackQueueBeforeShuffling.removeAll(where: { $0 == song })
     }
     
@@ -125,49 +125,49 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
         
         guard
             let currentSong = currentSong,
-            let currentSongIndex = playbackQueue.firstIndex(of: currentSong)
+            let currentSongIndex = playbackQueueAfterShuffling.firstIndex(of: currentSong)
         else {
-            playbackQueue = isShuffled ? playbackQueueBeforeShuffling.shuffled() : playbackQueueBeforeShuffling
+            playbackQueueAfterShuffling = isShuffled ? playbackQueueBeforeShuffling.shuffled() : playbackQueueBeforeShuffling
             return
         }
         
         if isShuffled {
-            var temporaryPlaybackQueue = playbackQueue
+            var temporaryPlaybackQueue = playbackQueueAfterShuffling
             temporaryPlaybackQueue.remove(at: currentSongIndex)
             temporaryPlaybackQueue.shuffle()
-            playbackQueue = [currentSong] + temporaryPlaybackQueue
+            playbackQueueAfterShuffling = [currentSong] + temporaryPlaybackQueue
         } else {
-            playbackQueue = playbackQueueBeforeShuffling
+            playbackQueueAfterShuffling = playbackQueueBeforeShuffling
         }
     }
     
     func playNextSongInPlaybackQueue() {
-        guard !playbackQueue.isEmpty else {
+        guard !playbackQueueAfterShuffling.isEmpty else {
             return
         }
         
         if let currentSong = currentSong,
-           let currentSongIndex = playbackQueue.firstIndex(of: currentSong) {
-            let next = (currentSongIndex + 1) % playbackQueue.count
-            play(song: playbackQueue[next])
+           let currentSongIndex = playbackQueueAfterShuffling.firstIndex(of: currentSong) {
+            let next = (currentSongIndex + 1) % playbackQueueAfterShuffling.count
+            play(song: playbackQueueAfterShuffling[next])
         } else {
-            if let firstSong = playbackQueue.first {
+            if let firstSong = playbackQueueAfterShuffling.first {
                 play(song: firstSong)
             }
         }
     }
     
     func playPreviousSongInPlaybackQueue() {
-        guard !playbackQueue.isEmpty else {
+        guard !playbackQueueAfterShuffling.isEmpty else {
             return
         }
         
         if let currentSong = currentSong,
-           let currentSongIndex = playbackQueue.firstIndex(of: currentSong) {
-            let previous = (currentSongIndex - 1 + playbackQueue.count) % playbackQueue.count
-            play(song: playbackQueue[previous])
+           let currentSongIndex = playbackQueueAfterShuffling.firstIndex(of: currentSong) {
+            let previous = (currentSongIndex - 1 + playbackQueueAfterShuffling.count) % playbackQueueAfterShuffling.count
+            play(song: playbackQueueAfterShuffling[previous])
         } else {
-            if let lastSong = playbackQueue.last {
+            if let lastSong = playbackQueueAfterShuffling.last {
                 play(song: lastSong)
             }
         }
@@ -184,18 +184,18 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
     }
     
     private func playSongInPlaybackQueue() {
-        guard !playbackQueue.isEmpty else {
+        guard !playbackQueueAfterShuffling.isEmpty else {
             stop()
             currentSong = nil
             return
         }
         
         if let currentSong = currentSong,
-           let currentSongIndex = playbackQueue.firstIndex(of: currentSong) {
-            let next = (currentSongIndex + 1) % playbackQueue.count
-            play(song: playbackQueue[next])
+           let currentSongIndex = playbackQueueAfterShuffling.firstIndex(of: currentSong) {
+            let next = (currentSongIndex + 1) % playbackQueueAfterShuffling.count
+            play(song: playbackQueueAfterShuffling[next])
         } else {
-            if let firstSong = playbackQueue.first {
+            if let firstSong = playbackQueueAfterShuffling.first {
                 play(song: firstSong)
             }
         }
