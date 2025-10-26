@@ -102,6 +102,20 @@ struct GlobalSongsListView: View {
                             } label: {
                                 Label("Add to Playlist", systemImage: "music.pages.fill")
                             }
+                            
+                            if !audioViewModel.checkIfSongBelongsToPlaybackQueue(song: song) {
+                                Button {
+                                    audioViewModel.addToPlaybackQueue(song: song)
+                                } label: {
+                                    Label("Add to queue", systemImage: "music.note.list")
+                                }
+                            } else {
+                                Button(role: .destructive) {
+                                    audioViewModel.removeFromPlaybackQueue(song: song)
+                                } label: {
+                                    Label("Remove from queue", systemImage: "trash.fill")
+                                }
+                            }
                         } label: {
                             Image(systemName: "ellipsis")
                                 .font(.title2)

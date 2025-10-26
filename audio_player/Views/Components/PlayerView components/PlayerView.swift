@@ -128,7 +128,9 @@ struct PlayerView: View {
                         }
                         
                         HStack(spacing: 25) {
-                            Button(action: {  }) {
+                            Button {
+                                audioViewModel.playPreviousSongInPlaybackQueue()
+                            } label: {
                                 Image(systemName: "backward.fill")
                                     .font(.system(size: 30))
                                     .foregroundStyle(.white)
@@ -147,7 +149,9 @@ struct PlayerView: View {
                                 audioViewModel.toggle()
                             }
                             
-                            Button(action: {  }) {
+                            Button {
+                                audioViewModel.playNextSongInPlaybackQueue()
+                            } label: {
                                 Image(systemName: "forward.fill")
                                     .font(.system(size: 30))
                                     .foregroundStyle(.white)

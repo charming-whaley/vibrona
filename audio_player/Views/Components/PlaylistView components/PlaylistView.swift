@@ -181,10 +181,18 @@ struct PlaylistView: View {
                                 Label("Play next", systemImage: "play.fill")
                             }
                             
-                            Button {
-                                
-                            } label: {
-                                Label("Hide", systemImage: "eye.slash.fill")
+                            if !audioViewModel.checkIfSongBelongsToPlaybackQueue(song: song) {
+                                Button {
+                                    audioViewModel.addToPlaybackQueue(song: song)
+                                } label: {
+                                    Label("Add to queue", systemImage: "music.note.list")
+                                }
+                            } else {
+                                Button(role: .destructive) {
+                                    audioViewModel.removeFromPlaybackQueue(song: song)
+                                } label: {
+                                    Label("Remove from queue", systemImage: "trash.fill")
+                                }
                             }
                             
                             Button(role: .destructive) {
