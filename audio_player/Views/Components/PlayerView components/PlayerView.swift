@@ -160,23 +160,23 @@ struct PlayerView: View {
                         .frame(maxWidth: .infinity)
                         .overlay {
                             HStack(spacing: 0) {
-                                Image(systemName: audioViewModel.isRepeating ? "repeat.1" : "repeat")
-                                    .font(.title3)
-                                    .foregroundStyle(audioViewModel.isRepeating ? .blue : .white)
-                                    .onTapGesture {
-                                        audioViewModel.toggleRepeat()
-                                    }
-                                    .disabled(!audioViewModel.isPlaying)
+                                PlayerControlButtonView(
+                                    systemName: "repeat",
+                                    activeSystemName: "repeat.1",
+                                    isActive: audioViewModel.isRepeating,
+                                    isDisabled: !audioViewModel.isPlaying,
+                                    action: { audioViewModel.toggleRepeat() }
+                                )
                                 
                                 Spacer()
                                 
-                                Image(systemName: "shuffle")
-                                    .font(.title3)
-                                    .foregroundStyle(audioViewModel.isShuffled ? .blue : .white)
-                                    .onTapGesture {
-                                        audioViewModel.shuffle()
-                                    }
-                                    .disabled(audioViewModel.playbackQueueBeforeShuffling.isEmpty || audioViewModel.playbackQueueBeforeShuffling.count <= 2)
+                                PlayerControlButtonView(
+                                    systemName: "shuffle",
+                                    isActive: audioViewModel.isShuffled,
+                                    isDisabled: audioViewModel.playbackQueueBeforeShuffling.count <= 2,
+                                    action: { audioViewModel.shuffle() }
+                                )
+                                
                             }
                         }
                     }

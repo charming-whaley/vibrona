@@ -1,11 +1,9 @@
 import SwiftUI
 import AVKit
-import Combine
 
 struct RootView: View {
     @State private var audioViewModel: AudioViewModel = .init()
     @State private var expandPlayerView: Bool = false
-    
     @State private var player: AVAudioPlayer?
     
     var body: some View {
