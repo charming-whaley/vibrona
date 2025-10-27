@@ -3,17 +3,20 @@ import SwiftUI
 struct SongItemView<Actions, Style>: View where Actions: View, Style: ShapeStyle {
     var song: Song
     var size: CGSize
+    var padding: CGFloat
     var actions: Actions
     var style: Style
     
     init(
         song: Song,
         size: CGSize = .init(width: 40, height: 40),
+        padding: CGFloat = 16,
         style: Style = Color("AppDarkGrayColor"),
         actions: @escaping () -> Actions
     ) {
         self.song = song
         self.size = size
+        self.padding = padding
         self.style = style
         self.actions = actions()
     }
@@ -29,7 +32,7 @@ struct SongItemView<Actions, Style>: View where Actions: View, Style: ShapeStyle
             RoundedRectangle(cornerRadius: 10)
                 .fill(style)
         }
-        .padding(.horizontal)
+        .padding(.horizontal, padding)
         .contentShape(.rect)
     }
     
