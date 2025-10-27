@@ -1,13 +1,20 @@
 import SwiftUI
 
-struct SongItemView<Actions>: View where Actions: View {
+struct SongItemView<Actions, Style>: View where Actions: View, Style: ShapeStyle {
     var song: Song
     var size: CGSize
     var actions: Actions
+    var style: Style
     
-    init(song: Song, size: CGSize = .init(width: 40, height: 40), actions: @escaping () -> Actions) {
+    init(
+        song: Song,
+        size: CGSize = .init(width: 40, height: 40),
+        style: Style = Color("AppDarkGrayColor"),
+        actions: @escaping () -> Actions
+    ) {
         self.song = song
         self.size = size
+        self.style = style
         self.actions = actions()
     }
     
@@ -20,7 +27,7 @@ struct SongItemView<Actions>: View where Actions: View {
         .padding()
         .background {
             RoundedRectangle(cornerRadius: 10)
-                .fill(Color("AppDarkGrayColor"))
+                .fill(style)
         }
         .padding(.horizontal)
         .contentShape(.rect)
