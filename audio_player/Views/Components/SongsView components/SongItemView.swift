@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct SongItemView<Actions, Style>: View where Actions: View, Style: ShapeStyle {
+    @Environment(AudioViewModel.self) var audioViewModel
+    
     var song: Song
     var size: CGSize
     var padding: CGFloat
@@ -38,14 +40,22 @@ struct SongItemView<Actions, Style>: View where Actions: View, Style: ShapeStyle
     
     @ViewBuilder private func SongItemContentView() -> some View {
         HStack(spacing: 12) {
-            if let cover = song.cover {
-                Image(uiImage: cover)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: size.width, height: size.height)
-                    .clipShape(.rect(cornerRadius: 15))
-            } else {
-                EmptyCoverView(of: .init(width: size.width, height: size.height), with: .callout, of: size.height / 4, with: .black)
+            Group {
+                if let cover = song.cover {
+                    Image(uiImage: cover)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: size.width, height: size.height)
+                        .clipShape(.rect(cornerRadius: 15))
+                } else {
+                    EmptyCoverView(of: .init(width: size.width, height: size.height), with: .callout, of: size.height / 4, with: .black)
+                }
+            }
+            .overlay(alignment: .bottom) {
+                if let currentSong = audioViewModel.currentSong, currentSong == song, audioViewModel.isPlaying {
+                    AnimatedEqualizerBarsView()
+                        .frame(width: 25, height: 25)
+                }
             }
             
             SongItemInformationView()
@@ -72,4 +82,5 @@ struct SongItemView<Actions, Style>: View where Actions: View, Style: ShapeStyle
         VStack {  }
     }
     .preferredColorScheme(.dark)
+    .environment(AudioViewModel())
 }
