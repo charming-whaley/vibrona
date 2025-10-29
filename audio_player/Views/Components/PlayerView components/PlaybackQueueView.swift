@@ -1,9 +1,11 @@
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 struct PlaybackQueueView<PlayerControls>: View where PlayerControls: View {
     @Environment(AudioViewModel.self) var audioViewModel: AudioViewModel
     
+    @State private var draggedSong: Song?
     var playerControls: PlayerControls
     
     var playbackQueue: [Song] {
@@ -36,12 +38,50 @@ struct PlaybackQueueView<PlayerControls>: View where PlayerControls: View {
                             .foregroundStyle(.gray)
                             .contentShape(.rect)
                     }
+                    .onDrag {
+                        draggedSong = song
+                        return NSItemProvider(object: song.id.uuidString as NSString)
+                    }
+                    .onDrop(of: [UTType.text], delegate: SongItemDropDelegate(
+                        song: song,
+                        draggedSong: $draggedSong,
+                        audioViewModel: audioViewModel
+                    ))
                 }
             }
             
             playerControls
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct SongItemDropDelegate: DropDelegate {
+    let song: Song
+    @Binding var draggedSong: Song?
+    let audioViewModel: AudioViewModel
+    
+    func performDrop(info: DropInfo) -> Bool {
+        guard let draggedSong = draggedSong else {
+            return false
+        }
+        
+        let source = audioViewModel.isShuffled ? audioViewModel.playbackQueueAfterShuffling : audioViewModel.playbackQueueBeforeShuffling
+        guard
+            let fromPosition = source.firstIndex(of: draggedSong),
+            let toPosition = source.firstIndex(of: song)
+        else {
+            return false
+        }
+        
+        let destination = toPosition > fromPosition ? toPosition + 1 : toPosition
+        audioViewModel.move(from: IndexSet(integer: fromPosition), to: destination)
+        
+        self.draggedSong = nil
+        return true
+    }
+    
+    func dropEntered(info: DropInfo) {
     }
 }
 

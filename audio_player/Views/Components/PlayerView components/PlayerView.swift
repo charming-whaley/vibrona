@@ -60,7 +60,14 @@ struct PlayerView: View {
             Button(action: { showsPlaybackQueue.toggle() }) {
                 Image(systemName: "list.bullet")
                     .font(.title2)
-                    .foregroundStyle(.foreground)
+                    .foregroundStyle(showsPlaybackQueue ? .black : .white)
+                    .background {
+                        if showsPlaybackQueue {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(.white.opacity(0.7))
+                                .frame(width: 30, height: 30)
+                        }
+                    }
             }
         }
     }

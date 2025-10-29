@@ -120,6 +120,16 @@ final class AudioViewModel : NSObject, AVAudioPlayerDelegate {
         playbackQueueBeforeShuffling.removeAll(where: { $0 == song })
     }
     
+    func move(from indexSet: IndexSet, to destination: Int) {
+        playbackQueueBeforeShuffling.move(fromOffsets: indexSet, toOffset: destination)
+        
+        if isShuffled {
+            isShuffled = false
+        }
+        
+        playbackQueueAfterShuffling = playbackQueueBeforeShuffling
+    }
+    
     func shuffle() {
         isShuffled.toggle()
         
