@@ -35,7 +35,6 @@ struct PlayerView: View {
                     PlayerPlaybackQueueContentView(proxy)
                 } else {
                     PlayerMainContentView(proxy)
-                    
                     Spacer()
                 }
             }
@@ -59,7 +58,7 @@ struct PlayerView: View {
             
             Button(action: { showsPlaybackQueue.toggle() }) {
                 Image(systemName: "list.bullet")
-                    .font(.title2)
+                    .font(.title3)
                     .foregroundStyle(showsPlaybackQueue ? .black : .white)
                     .background {
                         if showsPlaybackQueue {
@@ -180,13 +179,12 @@ struct PlayerView: View {
         }
         
         HStack(spacing: 25) {
-            Button {
-                audioViewModel.playPreviousSongInPlaybackQueue()
-            } label: {
-                Image(systemName: "backward.fill")
-                    .font(.system(size: 30))
-                    .foregroundStyle(.white)
-            }
+            Image(systemName: "backward.fill")
+                .font(.system(size: 30))
+                .foregroundStyle(.white)
+                .onTapGesture {
+                    audioViewModel.playPreviousSongInPlaybackQueue()
+                }
             
             ZStack(alignment: .center) {
                 Circle()
@@ -201,13 +199,12 @@ struct PlayerView: View {
                 audioViewModel.toggle()
             }
             
-            Button {
-                audioViewModel.playNextSongInPlaybackQueue()
-            } label: {
-                Image(systemName: "forward.fill")
-                    .font(.system(size: 30))
-                    .foregroundStyle(.white)
-            }
+            Image(systemName: "forward.fill")
+                .font(.system(size: 30))
+                .foregroundStyle(.white)
+                .onTapGesture {
+                    audioViewModel.playNextSongInPlaybackQueue()
+                }
         }
         .frame(maxWidth: .infinity)
         .overlay {
