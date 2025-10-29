@@ -5,7 +5,6 @@ import UniformTypeIdentifiers
 struct PlaybackQueueView<PlayerControls>: View where PlayerControls: View {
     @Environment(AudioViewModel.self) var audioViewModel: AudioViewModel
     
-    @State private var draggedSong: Song?
     var playerControls: PlayerControls
     
     var playbackQueue: [Song] {
@@ -30,58 +29,28 @@ struct PlaybackQueueView<PlayerControls>: View where PlayerControls: View {
             }
             .padding(.top, 12)
             
-            SongsCollectionView(removeScrollIndicators: true, padding: 0) {
+            List {
                 ForEach(playbackQueue) { song in
                     SongItemView(song: song, padding: 0) {
-                        Image(systemName: "line.3.horizontal")
-                            .font(.callout)
-                            .foregroundStyle(.gray)
-                            .contentShape(.rect)
+                        EmptyView()
                     }
-                    .onDrag {
-                        draggedSong = song
-                        return NSItemProvider(object: song.id.uuidString as NSString)
-                    }
-                    .onDrop(of: [UTType.text], delegate: SongItemDropDelegate(
-                        song: song,
-                        draggedSong: $draggedSong,
-                        audioViewModel: audioViewModel
-                    ))
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+                    .listRowBackground(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color("AppDarkGrayColor"))
+                            .padding(.vertical, 5)
+                    )
                 }
+                .onMove(perform: audioViewModel.move)
             }
+            .listStyle(.plain)
+            .environment(\.editMode, .constant(.active))
+            .scrollIndicators(.hidden)
             
             playerControls
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-struct SongItemDropDelegate: DropDelegate {
-    let song: Song
-    @Binding var draggedSong: Song?
-    let audioViewModel: AudioViewModel
-    
-    func performDrop(info: DropInfo) -> Bool {
-        guard let draggedSong = draggedSong else {
-            return false
-        }
-        
-        let source = audioViewModel.isShuffled ? audioViewModel.playbackQueueAfterShuffling : audioViewModel.playbackQueueBeforeShuffling
-        guard
-            let fromPosition = source.firstIndex(of: draggedSong),
-            let toPosition = source.firstIndex(of: song)
-        else {
-            return false
-        }
-        
-        let destination = toPosition > fromPosition ? toPosition + 1 : toPosition
-        audioViewModel.move(from: IndexSet(integer: fromPosition), to: destination)
-        
-        self.draggedSong = nil
-        return true
-    }
-    
-    func dropEntered(info: DropInfo) {
     }
 }
 
